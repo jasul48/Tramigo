@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tramigo - Proyecto de Trámites Simplificados</title>
+    <!-- Fuente Inter para un diseño moderno y limpio -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Variables de color basadas en la imagen */
+        :root {
+            --primary-blue: #0066cc;
+            --primary-gradient: linear-gradient(135deg, #0066cc 0%, #004a99 100%);
+            --hero-bg-gradient: linear-gradient(135deg, #f0f7ff 0%, #dbeafe 100%);
+            --text-dark: #0b2246;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: #ffffff;
+        }
+
+        /* --- NAVEGACIÓN --- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            /* Sombra sutil */
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-decoration: none;
+        }
+
+        .logo-title {
+            color: #0b2246;
+            /* Azul muy oscuro casi negro */
+            font-size: 32px;
+            font-weight: 800;
+            font-style: italic;
+            margin: 0;
+            letter-spacing: -1px;
+        }
+
+        .logo-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #444;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-blue);
+            transform: translateY(-1px);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--bg-bottom);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+        }
+
+        .user-profile:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.2);
+        }
+
+        .user-profile img {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* --- SECCIÓN HERO --- */
+        .hero {
+            display: flex;
+            min-height: 85vh;
+            /* Altura de la pantalla */
+        }
+
+        .hero-content {
+            flex: 1.1;
+            background: var(--hero-bg-gradient);
+            padding: 6% 5% 6% 8%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: var(--text-dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 40%;
+            height: 40%;
+            background: radial-gradient(circle, rgba(0, 102, 204, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            color: var(--text-muted);
+            max-width: 90%;
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.8s ease-out 0.2s both;
+        }
+
+        /* --- SEARCH BAR --- */
+        .search-container {
+            position: relative;
+            z-index: 1;
+            max-width: 500px;
+            margin-bottom: 3rem;
+            animation: slideUp 0.8s ease-out 0.4s both;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 1.2rem 1.5rem 1.2rem 3.5rem;
+            border-radius: 3rem;
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 102, 204, 0.1);
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 15px 40px rgba(0, 102, 204, 0.2);
+            transform: scale(1.02);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-blue);
+            width: 20px;
+        }
+
+        /* --- SUGGESTIONS DROPDOWN --- */
+        .suggestions-dropdown {
+            position: absolute;
+            top: 105%;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 1.5rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 102, 204, 0.1);
+            overflow: hidden;
+            display: none;
+            z-index: 1000;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .suggestion-item {
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .suggestion-item:last-child { border-bottom: none; }
+
+        .suggestion-item:hover, .suggestion-item.active {
+            background: var(--hero-bg-gradient);
+            color: var(--primary-blue);
+        }
+
+        .suggestion-item img {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+        }
+
+        .suggestion-info { display: flex; flex-direction: column; }
+        .suggestion-title { font-weight: 700; font-size: 1rem; }
+        .suggestion-category { font-size: 0.75rem; text-transform: uppercase; font-weight: 800; opacity: 0.6; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            animation: slideUp 0.8s ease-out 0.6s both;
+        }
+
+        .btn {
+            padding: 0.9rem 1.8rem;
+            border-radius: 0.4rem;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0052a3 0%, #003d80 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-secondary:hover {
+            background-color: #f0f7ff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 102, 204, 0.1);
+        }
+
+        /* --- IMAGEN HERO (DERECHA) --- */
+        .hero-image {
+            flex: 1;
+            /* 
+               ========================================================================
+               AQUÍ VA LA IMAGEN PRINCIPAL (LA FAMILIA) 
+               He colocado una imagen de Unsplash como placeholder para que se vea igual.
+               Puedes cambiar la URL en el 'background-image'.
+               ========================================================================
+            */
+            background-image: url('/static/img/hero_image.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* --- SECCIÓN INFERIOR (CARACTERÍSTICAS) --- */
+        .features {
+            text-align: center;
+            padding: 5rem 5%;
+            background-color: var(--bg-light);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .features h2 {
+            font-size: 1.8rem;
+            margin-bottom: 3rem;
+            color: #111;
+            font-weight: 700;
+        }
+
+        .features-grid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-align: left;
+            max-width: 260px;
+            background: transparent;
+        }
+
+        .feature-item img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 0.1));
+        }
+
+        .feature-item:hover img {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .feature-item p {
+            font-size: 0.85rem;
+            font-weight: 800;
+            margin: 0;
+            line-height: 1.3;
+            color: #222;
+        }
+
+        .contact-box {
+            background: white;
+            padding: 1.2rem 2rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(0, 102, 204, 0.1);
+        }
+
+        .contact-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 102, 204, 0.1);
+            border-color: var(--primary-blue);
+        }
+
+        .contact-box img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .contact-info {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .contact-info strong {
+            font-size: 1rem;
+            color: #0b2246;
+            font-weight: 800;
+        }
+
+        .contact-info span {
+            font-size: 0.85rem;
+            color: #333;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 992px) {
+            .hero {
+                flex-direction: column;
+            }
+
+            .hero-image {
+                min-height: 400px;
+            }
+
+            .hero-content {
+                padding: 10% 5%;
+            }
+
+            .nav-links {
+                display: none;
+                /* Simplificado para móviles en este demo */
+            }
+        }
+
+        /* --- MODAL NOSOTROS --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            position: relative;
+            max-width: 400px;
+            width: 90%;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #d32f2f;
+        }
+
+        .authors h3,
+        .social-media h3 {
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .authors p {
+            margin: 5px 0;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .social-media {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .social-icons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 30px;
+            background: #f5f8ff;
+            transition: all 0.3s ease;
+            width: 160px;
+            justify-content: center;
+        }
+
+        .social-link:hover {
+            background: #e0eaff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.1);
+        }
+
+        .social-link img {
+            width: 30px;
+            height: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVEGACIÓN -->
+    <header class="navbar">
+        <a href="/index" class="logo">
+            <!-- AQUÍ PUEDES PONER LA IMAGEN DE TU LOGO (etiqueta <img>). 
+                 Por ahora lo he hecho con texto estilizado para que se vea bien inmediatamente. -->
+            <span class="logo-title">Tramigo</span>
+            <div class="logo-subtitle">Trámites & Gestión Administrativa</div>
+        </a>
+        <div class="nav-right">
+            <nav class="nav-links">
+                <a href="#" id="nosotros-btn">Nosotros</a>
+                <a href="/categorias">Servicios</a>
+                <a href="#" id="aviso-btn">Aviso de Privacidad</a>
+                <a href="#" id="terminos-btn">Términos y Condiciones</a>
+            </nav>
+            <th:block th:if="${session.usuario_id != null}">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <a href="/mis_documentos" style="text-decoration: none; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 5px; transition: color 0.3s;" onmouseover="this.style.color='var(--primary-blue)'" onmouseout="this.style.color='var(--text-dark)'">
+                    <img src="/static/img/icons/folder_docs.png" alt="Docs">
+                    Mis Documentos
+                </a>
+                <a href="/perfil" style="text-decoration: none; display: flex; align-items: center; gap: 8px; transition: opacity 0.3s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                    <span style="font-weight: 700; font-size: 1rem; color: var(--text-dark);">Hola, <span th:text="${session.nombre}">Usuario</span></span>
+                </a>
+                <a href="/perfil" title="Ir a mi Perfil" style="text-decoration: none; display: flex; align-items: center; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                    <img th:if="${session.foto_perfil != null and !session.foto_perfil.isEmpty() and session.foto_perfil != 'default_profile.png'}" th:src="@{'/uploads/perfiles/' + ${session.foto_perfil}}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-blue); box-shadow: 0 4px 10px rgba(0, 102, 204, 0.2);">
+                    <img th:unless="${session.foto_perfil != null and !session.foto_perfil.isEmpty() and session.foto_perfil != 'default_profile.png'}" src="/static/img/icons/user_circle.png" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-blue); opacity: 0.8;">
+                </a>
+            </div>
+            </th:block><th:block th:unless="${session.usuario_id != null}">
+            <a href="/login" class="user-profile" title="Iniciar Sesión">
+                <img src="/static/img/icons/user_circle.png" alt="Usuario">
+            </a>
+            </th:block>
+        </div>
+    </header>
+
+    <!-- SECCIÓN PRINCIPAL (HERO) -->
+    <section class="hero">
+        <!-- Columna Izquierda (Texto y Botones) -->
+        <div class="hero-content">
+            <h1>Tramigo: Tu Guía Simplificada para Trámites Sin Estrés. Somos tu Guia y estamos al Alcance de Todos.
+            </h1>
+            <p>Entendemos la barrera del lenguaje técnico. En Tramigo, transformamos trámites complejos en <strong>guías
+                    visuales</strong> paso a paso, fomentando tu autonomía. <strong>Olvida la dependencia y el
+                    estrés</strong>; nosotros te facilitamos el camino.</p>
+            
+            <div class="search-container">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input type="text" class="search-bar" placeholder="¿Qué trámite buscas hoy? (ej. Pasaporte, INE, BBVA...)">
+                <div id="suggestions" class="suggestions-dropdown"></div>
+            </div>
+
+            <div class="hero-buttons">
+                <a href="/categorias" class="btn btn-primary">Nuestras Guías Paso a Paso</a>
+                <a href="/info_tramites" class="btn btn-secondary">Ver Categorías de Trámites</a>
+            </div>
+        </div>
+
+        <!-- Columna Derecha (Imagen) -->
+        <!-- La imagen está configurada en el CSS en la clase .hero-image -->
+        <div class="hero-image"></div>
+    </section>
+
+    <!-- SECCIÓN INFERIOR -->
+    <section class="features">
+        <h2>¿Preparado para recuperar tu autonomía?</h2>
+
+        <div class="features-grid">
+            <!-- Item 1: Actas -->
+            <div class="feature-item">
+                <img src="/static/img/icons/acta.png"
+                    alt="Actas de Nacimiento">
+                <p>ACTAS DE NACIMIENTO<br>(FORMATO DIGITAL)</p>
+            </div>
+
+            <!-- Item 2: CURP -->
+            <div class="feature-item">
+                <img src="/static/img/icons/curp.png"
+                    alt="CURP">
+                <p>CURP OFICIAL<br>(CONSULTA Y DESCARGA)</p>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="feature-item">
+                <!-- ========================================== -->
+                <!-- AQUÍ VA LA IMAGEN 2: Trámites Mayores -->
+                <!-- ========================================== -->
+                <img src="/static/img/icons/inapam.png" alt="Trámites para Mayores">
+                <p>TRÁMITES PARA MAYORES<br>(PENSIONES, INAPAM)</p>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="feature-item">
+                <!-- ========================================== -->
+                <!-- AQUÍ VA LA IMAGEN 3: Empresariales -->
+                <!-- ========================================== -->
+                <img src="/static/img/icons/shop.png" alt="Empresariales">
+                <p>EMPRESARIALES<br>(LICENCIAS)</p>
+            </div>
+
+            <!-- Item Contacto -->
+            <div class="contact-box">
+                <img src="/static/img/icons/email_support.png" alt="Email Soporte">
+                <div class="contact-info">
+                    <strong>CONTACTAR SOPORTE</strong>
+                    <a href="/contacto" style="color: var(--primary-blue); text-decoration: none; font-size: 0.9rem; margin-top: 4px; display: block;">Envíanos un mensaje →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODAL NOSOTROS -->
+    <div id="nosotrosModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" id="closeNosotros">&times;</button>
+            <h2>Sobre Nosotros</h2>
+            <div class="authors">
+                <h3>Autores:</h3>
+                <p>Luis Enrique Chavarria Gonzalez</p>
+                <p>Jesus Adrian Torres Lara</p>
+            </div>
+            <div class="social-media" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                <h3>Contáctanos:</h3>
+                <a href="https://wa.me/523319986833" target="_blank" rel="noopener noreferrer" class="social-link" style="width: auto; padding: 8px 25px;">
+                    <img src="/static/img/icons/whatsapp.png" alt="WhatsApp">
+                    <span>331 998 6833</span>
+                </a>
+            </div>
+            <div class="social-media">
+                <h3>Síguenos en:</h3>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/Tramigo" target="_blank" rel="noopener noreferrer"
+                        class="social-link">
+                        <img src="/static/img/icons/facebook.png" alt="Facebook">
+                        <span>@Tramigo</span>
+                    </a>
+                    <a href="https://x.com/Tramigo" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <img src="/static/img/icons/twitter.png" alt="Twitter">
+                        <span>@Tramigo</span>
+                    </a>
+                    <a href="https://www.instagram.com/Tramigo" target="_blank" rel="noopener noreferrer"
+                        class="social-link">
+                        <img src="/static/img/icons/instagram.png" alt="Instagram">
+                        <span>@Tramigo</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- MODAL AVISO DE PRIVACIDAD -->
+    <div id="avisoModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 550px; max-height: 80vh; overflow-y: auto; text-align: left;">
+            <button class="close-modal" id="closeAviso">&times;</button>
+            <h2 style="text-align: center; color: #0066cc;">Aviso de Privacidad</h2>
+            <p style="font-size: 0.82rem; color: #888; text-align: center;">Última actualización: Abril 2025</p>
+
+            <h3>1. Responsable del tratamiento de datos</h3>
+            <p>Tramigo es responsable del uso y protección de tus datos personales. Operamos conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP) de México.</p>
+
+            <h3>2. Datos personales que recabamos</h3>
+            <p>Podemos recabar los siguientes datos al momento de tu registro: nombre completo, correo electrónico, número de teléfono y contraseña encriptada. No recabamos información sensible.</p>
+
+            <h3>3. Finalidad del tratamiento</h3>
+            <p>Tus datos son utilizados exclusivamente para: identificarte como usuario, brindarte acceso a nuestras guías de trámites, y mejorar la experiencia dentro de la plataforma. No compartimos tu información con terceros.</p>
+
+            <h3>4. Seguridad de tus datos</h3>
+            <p>Implementamos medidas de seguridad técnicas y administrativas para proteger tu información contra acceso no autorizado, pérdida o alteración.</p>
+
+            <h3>5. Derechos ARCO</h3>
+            <p>Tienes derecho a Acceder, Rectificar, Cancelar u Oponerte al tratamiento de tus datos personales. Para ejercerlos, contáctanos a través de WhatsApp: <strong>331 998 6833</strong>.</p>
+
+            <h3>6. Cambios al aviso</h3>
+            <p>Nos reservamos el derecho de modificar este aviso. Cualquier cambio será notificado a través de la plataforma.</p>
+        </div>
+    </div>
+
+    <!-- MODAL TÉRMINOS Y CONDICIONES -->
+    <div id="terminosModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 550px; max-height: 80vh; overflow-y: auto; text-align: left;">
+            <button class="close-modal" id="closeTerminos">&times;</button>
+            <h2 style="text-align: center; color: #0066cc;">Términos y Condiciones</h2>
+            <p style="font-size: 0.82rem; color: #888; text-align: center;">Última actualización: Abril 2025</p>
+
+            <h3>1. Aceptación de términos</h3>
+            <p>Al acceder y utilizar Tramigo, aceptas estos Términos y Condiciones en su totalidad. Si no estás de acuerdo, te pedimos que no utilices la plataforma.</p>
+
+            <h3>2. Descripción del servicio</h3>
+            <p>Tramigo es una plataforma informativa y educativa que proporciona guías visuales para facilitar la comprensión y realización de trámites administrativos en México. No somos un organismo gubernamental ni actuamos en nombre de ninguna dependencia oficial.</p>
+
+            <h3>3. Uso correcto de la plataforma</h3>
+            <p>El usuario se compromete a utilizar Tramigo de forma lícita, sin realizar actividades fraudulentas, sin intentar vulnerar la seguridad del sistema, y sin reproducir el contenido sin autorización previa.</p>
+
+            <h3>4. Propiedad intelectual</h3>
+            <p>Todo el contenido de Tramigo —incluyendo textos, imágenes, guías y diseño— es propiedad de sus autores: <strong>Luis Enrique Chavarria Gonzalez</strong> y <strong>Jesus Adrian Torres Lara</strong>. Queda prohibida su reproducción sin consentimiento.</p>
+
+            <h3>5. Limitación de responsabilidad</h3>
+            <p>La información proporcionada en Tramigo tiene carácter orientativo. Tramigo no se hace responsable por errores u omisiones en los trámites realizados por el usuario basándose en el contenido de la plataforma.</p>
+
+            <h3>6. Modificaciones</h3>
+            <p>Tramigo se reserva el derecho de modificar estos términos en cualquier momento. El uso continuado de la plataforma después de cualquier cambio implica la aceptación de los nuevos términos.</p>
+
+            <h3>7. Contacto</h3>
+            <p>Para cualquier duda relacionada con estos términos, contáctanos vía WhatsApp al <strong>331 998 6833</strong> o en nuestras redes sociales <strong>@Tramigo</strong>.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.querySelector('.search-bar');
+            const suggestionsBox = document.getElementById('suggestions');
+            
+            // Base de datos de trámites para el buscador
+            const tramites = [
+                { title: 'INE (Credencial)', url: "/guia_ine", category: 'Identidad', img: '/static/img/icons/ine.png' },
+                { title: 'Acta de Nacimiento', url: "/guia_acta", category: 'Documentos', img: '/static/img/icons/acta.png' },
+                { title: 'CURP', url: "/guia_curp", category: 'Documentos', img: '/static/img/icons/curp.png' },
+                { title: 'Pasaporte Mexicano', url: "/guia_pasaporte", category: 'Viajes', img: '/static/img/icons/pasaporte.png' },
+                { title: 'Tarjeta INAPAM', url: "/guia_inapam", category: 'Adultos Mayores', img: '/static/img/icons/family.png' },
+                { title: 'Licencia de Conducir', url: "/guia_licencia", category: 'Vehicular', img: '/static/img/icons/car.png' },
+                { title: 'BBVA (Abrir Cuenta)', url: "/guia_bbva", category: 'Banco', img: '/static/img/icons/tarjetas.png' },
+                { title: 'Citibanamex', url: "/guia_citibanamex", category: 'Banco', img: '/static/img/icons/tarjetas.png' },
+                { title: 'Santander', url: "/guia_santander", category: 'Banco', img: '/static/img/icons/tarjetas.png' },
+                { title: 'Banco Azteca', url: "/guia_banco_azteca", category: 'Banco', img: '/static/img/icons/tarjetas.png' },
+                { title: 'Banorte', url: "/guia_banorte", category: 'Banco', img: '/static/img/icons/tarjetas.png' },
+                { title: 'RFC (Inscripción al SAT)', url: "/guia_rfc", category: 'Documentos', img: '/static/img/icons/rfc.png' },
+                { title: 'Cédula Profesional', url: "/guia_cedula", category: 'Documentos', img: '/static/img/icons/diploma.png' },
+                { title: 'Visa Americana', url: "/guia_visa", category: 'Viajes', img: '/static/img/icons/pasaporte.png' },
+                { title: 'Cartilla Militar', url: "/guia_militar", category: 'Identidad', img: '/static/img/icons/militar.png' }
+            ];
+
+            let selectedIndex = -1;
+
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase().trim();
+                suggestionsBox.innerHTML = '';
+                selectedIndex = -1;
+
+                if (query.length < 1) {
+                    suggestionsBox.style.display = 'none';
+                    return;
+                }
+
+                const filtered = tramites.filter(t => 
+                    t.title.toLowerCase().includes(query) || 
+                    t.category.toLowerCase().includes(query)
+                ).slice(0, 5); // Limitar a 5 sugerencias
+
+                if (filtered.length > 0) {
+                    filtered.forEach((t, index) => {
+                        const item = document.createElement('div');
+                        item.className = 'suggestion-item';
+                        item.innerHTML = `
+                            <img src="${t.img}" alt="${t.title}">
+                            <div class="suggestion-info">
+                                <span class="suggestion-title">${t.title}</span>
+                                <span class="suggestion-category">${t.category}</span>
+                            </div>
+                        `;
+                        item.addEventListener('click', () => {
+                            window.location.href = t.url;
+                        });
+                        suggestionsBox.appendChild(item);
+                    });
+                    suggestionsBox.style.display = 'block';
+                } else {
+                    suggestionsBox.style.display = 'none';
+                }
+            });
+
+            searchInput.addEventListener('keydown', (e) => {
+                const items = suggestionsBox.querySelectorAll('.suggestion-item');
+                if (e.key === 'ArrowDown') {
+                    selectedIndex = (selectedIndex + 1) % items.length;
+                    updateSelection(items);
+                } else if (e.key === 'ArrowUp') {
+                    selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+                    updateSelection(items);
+                } else if (e.key === 'Enter') {
+                    if (selectedIndex > -1) {
+                        items[selectedIndex].click();
+                    } else {
+                        // Si no hay nada seleccionado pero escribió algo completo
+                        const query = searchInput.value.toLowerCase().trim();
+                        const exactMatch = tramites.find(t => t.title.toLowerCase() === query);
+                        if (exactMatch) {
+                            window.location.href = exactMatch.url;
+                        } else {
+                            // Si no hay match exacto, ir a la página de categorías
+                            window.location.href = `/categorias?search=${encodeURIComponent(query)}`;
+                        }
+                    }
+                }
+            });
+
+            function updateSelection(items) {
+                items.forEach((item, index) => {
+                    if (index === selectedIndex) {
+                        item.classList.add('active');
+                        item.scrollIntoView({ block: 'nearest' });
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            }
+
+            // Cerrar sugerencias al hacer click fuera
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                    suggestionsBox.style.display = 'none';
+                }
+            });
+
+            // Helper para manejar modales
+            function setupModal(btnId, modalId, closeId) {
+                const btn = document.getElementById(btnId);
+                const modal = document.getElementById(modalId);
+                const close = document.getElementById(closeId);
+                if (btn && modal && close) {
+                    btn.addEventListener('click', (e) => { e.preventDefault(); modal.style.display = 'flex'; });
+                    close.addEventListener('click', () => { modal.style.display = 'none'; });
+                    window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+                }
+            }
+            setupModal('nosotros-btn', 'nosotrosModal', 'closeNosotros');
+            setupModal('aviso-btn', 'avisoModal', 'closeAviso');
+            setupModal('terminos-btn', 'terminosModal', 'closeTerminos');
+        });
+    </script>
+</body>
+
+</html>

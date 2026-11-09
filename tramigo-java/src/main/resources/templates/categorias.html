@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorías de Trámites - Tramigo</title>
+    <!-- Fuente Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Mismas variables de color que la página principal */
+        :root {
+            --primary-blue: #0066cc;
+            --primary-gradient: linear-gradient(135deg, #0066cc 0%, #004a99 100%);
+            --hero-bg-gradient: linear-gradient(135deg, #f0f7ff 0%, #dbeafe 100%);
+            --text-dark: #0b2246;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+        }
+
+        /* --- NAVEGACIÓN --- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-decoration: none;
+        }
+
+        .logo-title {
+            color: #0b2246;
+            font-size: 32px;
+            font-weight: 800;
+            font-style: italic;
+            margin: 0;
+            letter-spacing: -1px;
+        }
+
+        .logo-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #444;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        .nav-right { display: flex; align-items: center; gap: 2rem; }
+        .user-profile {
+            display: flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px; border-radius: 50%;
+            background-color: var(--bg-bottom);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+        }
+        .user-profile:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.2);
+        }
+        .user-profile img { width: 24px; height: 24px; }
+
+        /* --- HEADER DE PÁGINA --- */
+        .page-header {
+            background: var(--hero-bg-gradient);
+            padding: 5rem 5%;
+            text-align: center;
+            color: var(--text-dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 102, 204, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 50%, rgba(0, 102, 204, 0.03) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .page-header h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin: 0 0 1rem 0;
+            color: var(--text-dark);
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header p {
+            font-size: 1.15rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: var(--text-muted);
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 700;
+            background: rgba(0, 102, 204, 0.08);
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-link:hover {
+            background: rgba(0, 102, 204, 0.15);
+            transform: translateX(-5px);
+        }
+
+        /* --- GRID DE TRÁMITES --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 5%;
+        }
+
+        .grid-categorias {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        /* --- TARJETAS (CARDS) --- */
+        .card {
+            background: #ffffff;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0, 102, 204, 0.05);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 102, 204, 0.12);
+            border-color: rgba(0, 102, 204, 0.2);
+        }
+
+        .card-img-wrapper {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+            background-color: #e6f0ff;
+            /* Fondo azul claro para los íconos */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-img {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .card-img {
+            transform: scale(1.05);
+        }
+
+        .card-tag {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary-blue);
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-content {
+            padding: 1.8rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #111;
+            margin: 0 0 0.8rem 0;
+            line-height: 1.3;
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.6;
+            margin: 0 0 1.5rem 0;
+            flex-grow: 1;
+        }
+
+        .btn-card {
+            display: block;
+            text-align: center;
+            padding: 0.9rem 1.5rem;
+            border-radius: 0.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            background: var(--primary-gradient);
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.2);
+        }
+
+        .btn-card:hover {
+            background: linear-gradient(135deg, #0052a3 0%, #003d80 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 102, 204, 0.3);
+        }
+
+        /* --- BARRA DE BÚSQUEDA --- */
+        .search-container {
+            margin-bottom: 2.5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 600px;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border: 2px solid rgba(0, 102, 204, 0.2);
+            border-radius: 2rem;
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            font-family: 'Inter', sans-serif;
+            background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%230066cc" width="24px" height="24px"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>') no-repeat right 1.5rem center;
+            background-size: 1.2rem;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .page-header {
+                padding: 3rem 5%;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+        }
+        /* --- MODAL NOSOTROS --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            position: relative;
+            max-width: 400px;
+            width: 90%;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover { color: #d32f2f; }
+
+        .authors h3, .social-media h3 {
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .authors p { margin: 5px 0; font-weight: 600; color: #444; }
+
+        .social-media { margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; }
+
+        .social-icons { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+
+        .social-link {
+            display: flex; align-items: center; gap: 10px; text-decoration: none;
+            color: #333; font-weight: 600; padding: 8px 20px; border-radius: 30px;
+            background: #f5f8ff; transition: all 0.3s ease; width: 160px; justify-content: center;
+        }
+
+        .social-link:hover {
+            background: #e0eaff; transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.1);
+        }
+
+        .social-link img { width: 30px; height: 30px; }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVEGACIÓN -->
+    <header class="navbar">
+        <a href="/index" class="logo">
+            <span class="logo-title">Tramigo</span>
+            <div class="logo-subtitle">Trámites & Gestión Administrativa</div>
+        </a>
+        <div class="nav-right">
+            <nav class="nav-links">
+                <a href="/index">Inicio</a>
+                <a href="#" id="nosotros-btn">Nosotros</a>
+                <a href="/categorias" style="color: var(--primary-blue);">Servicios</a>
+            </nav>
+            <th:block th:if="${session.usuario_id != null}">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <a href="/mis_documentos" style="text-decoration: none; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 5px; transition: color 0.3s;" onmouseover="this.style.color='var(--primary-blue)'" onmouseout="this.style.color='var(--text-dark)'">
+                    <img src="/static/img/icons/folder_docs.png" alt="Docs">
+                    Mis Documentos
+                </a>
+                <a href="/perfil" style="text-decoration: none; display: flex; align-items: center; gap: 8px; transition: opacity 0.3s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                    <span style="font-weight: 700; font-size: 1rem; color: var(--text-dark);">Hola, <span th:text="${session.nombre}">Usuario</span></span>
+                </a>
+                <a href="/perfil" title="Ir a mi Perfil" style="text-decoration: none; display: flex; align-items: center; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                    <img th:if="${session.foto_perfil != null and !session.foto_perfil.isEmpty() and session.foto_perfil != 'default_profile.png'}" th:src="@{'/uploads/perfiles/' + ${session.foto_perfil}}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-blue); box-shadow: 0 4px 10px rgba(0, 102, 204, 0.2);">
+                    <img th:unless="${session.foto_perfil != null and !session.foto_perfil.isEmpty() and session.foto_perfil != 'default_profile.png'}" src="/static/img/icons/user_circle.png" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-blue); opacity: 0.8;">
+                </a>
+            </div>
+            </th:block><th:block th:unless="${session.usuario_id != null}">
+            <a href="/login" class="user-profile" title="Iniciar Sesión">
+                <img src="/static/img/icons/user_circle.png" alt="Usuario">
+            </a>
+            </th:block>
+        </div>
+    </header>
+
+    <!-- HEADER DE PÁGINA -->
+    <section class="page-header">
+        <a href="/index" class="back-link">← Volver al Inicio</a>
+        <h1>Categorías de Trámites</h1>
+        <p>Encuentra instrucciones paso a paso, requisitos oficiales y consejos para realizar los trámites más comunes
+            en México sin estrés ni confusiones.</p>
+    </section>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="container">
+
+        <!-- BARRA DE BÚSQUEDA -->
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Buscar trámite">
+        </div>
+
+        <div class="grid-categorias" id="tramitesGrid">
+
+            <!-- TRÁMITE 1: INE -->
+            <div class="card">
+                <div class="card-img-wrapper">
+                    <span class="card-tag">Identidad</span>
+                    <img src="/static/img/icons/ine.png" alt="INE"
+                        class="card-img">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Credencial para Votar (INE)</h3>
+                    <p class="card-desc">Guía para sacar tu INE por primera vez, renovarla por pérdida o vencimiento, o
+                        actualizar tu domicilio.</p>
+                    <a href="/guia_ine" class="btn-card">Ver Pasos y Requisitos</a>
+                </div>
+            </div>
+
+            <!-- TRÁMITE 2: ACTA DE NACIMIENTO -->
+            <div class="card">
+                <div class="card-img-wrapper">
+                    <span class="card-tag">Documentos</span>
+                    <img src="/static/img/icons/acta.png" alt="Acta de Nacimiento"
+                        class="card-img">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Acta de Nacimiento</h3>
+                    <p class="card-desc">Aprende a descargar e imprimir tu copia certificada del acta de nacimiento en
+                        línea de forma oficial.</p>
+                    <a href="/guia_acta" class="btn-card">Ver Pasos y Requisitos</a>
+                </div>
+            </div>
+
+            <!-- TRÁMITE 3: CURP -->
+            <div class="card">
+                <div class="card-img-wrapper">
+                    <span class="card-tag">Documentos</span>
+                    <img src="/static/img/icons/curp.png" alt="CURP"
+                        class="card-img">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">CURP</h3>
+                    <p class="card-desc">Consulta, descarga e imprime tu Clave Única de Registro de Población (CURP) de
+                        manera gratuita.</p>
+                    <a href="/guia_curp" class="btn-card">Ver Pasos y Requisitos</a>
+                </div>
+            </div>
+
+            <!-- TRÁMITE 3: BANCOS -->
+            <div class="card">
+                <div class="card-img-wrapper">
+                    <span class="card-tag">Finanzas</span>
+                    <img src="/static/img/icons/tarjetas.png" alt="Banco" class="card-img">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Apertura de Cuenta Bancaria</h3>
+                    <p class="card-desc">Qué documentos llevar y cómo abrir una cuenta básica en bancos populares como
+                        BBVA, Banamex o Santander.</p>
+                    <a href="/categorias_bancos" class="btn-card">Ver Pasos y Requisitos</a>
+                </div>
+            </div>
+
+            <!-- TRÁMITE 4: PASAPORTE -->
+            <div class="card">
+                <div class="card-img-wrapper">
+                    <span class="card-tag">Viajes</span>
+                    <img src="/static/img/icons/passport.png" alt="Pasaporte" class="card-img">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Pasaporte Mexicano (SRE)</h3>
+                    <p class="card-desc">Cómo agendar tu cita en la Secretaría de Relaciones Exteriores y cuánto cuesta
+                        el pasaporte vigente.</p>
+                    <a href="/guia_pasaporte" class="btn-card">Ver Pasos y Requisitos</a>
+                </div>
+            </div>
+
+            <!-- TRÁMITE 5: INAPAM -->
+            <div class="card">
+                <div class="card-img-wrapper">
+                    <span class="card-tag">Adultos Mayores</span>
+                    <img src="/static/img/icons/inapam.png" alt="Adultos Mayores"
+                        class="card-img">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Tarjeta INAPAM</h3>
+                    <p class="card-desc">Tramita tu credencial del INAPAM a los 60 años para obtener descuentos en
+                        medicinas, transporte y más.</p>
+                    <a href="/guia_inapam" class="btn-card">Ver Pasos y Requisitos</a>
+                </div>
+            </div>
+
+            <!-- TRÁMITE 6: LICENCIA -->
+            <div class="card">
+                <div class="card-img-wrapper">
+                    <span class="card-tag">Vehicular</span>
+                    <img src="/static/img/icons/licencia.png" alt="Licencia" class="card-img">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Licencia de Conducir</h3>
+                    <p class="card-desc">Requisitos generales para obtener o renovar tu licencia de automovilista particular en tu estado.</p>
+                    <a href="/guia_licencia" class="btn-card">Ver Pasos y Requisitos</a>
+                </div>
+            </div>
+
+            <!-- TRÁMITE 7: RFC -->
+            <div class="card">
+                <div class="card-img-wrapper">
+                    <span class="card-tag">Documentos</span>
+                    <img src="/static/img/icons/rfc.png" alt="RFC" class="card-img">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">RFC (Inscripción al SAT)</h3>
+                    <p class="card-desc">Cómo obtener tu Registro Federal de Contribuyentes por primera vez para tu vida laboral.</p>
+                    <a href="/guia_rfc" class="btn-card">Ver Pasos y Requisitos</a>
+                </div>
+            </div>
+
+            <!-- TRÁMITE 8: CÉDULA -->
+            <div class="card">
+                <div class="card-img-wrapper">
+                    <span class="card-tag">Documentos</span>
+                    <img src="/static/img/icons/diploma.png" alt="Cédula" class="card-img">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Cédula Profesional</h3>
+                    <p class="card-desc">Trámite de la cédula electrónica oficial para egresados de licenciatura o posgrado.</p>
+                    <a href="/guia_cedula" class="btn-card">Ver Pasos y Requisitos</a>
+                </div>
+            </div>
+
+            <!-- TRÁMITE 9: VISA -->
+            <div class="card">
+                <div class="card-img-wrapper">
+                    <span class="card-tag">Viajes</span>
+                    <img src="/static/img/icons/passport.png" alt="Visa" class="card-img" style="filter: hue-rotate(90deg);">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Visa Americana (B1/B2)</h3>
+                    <p class="card-desc">Pasos para llenar el formulario DS-160 y agendar tu cita en el consulado de EE.UU.</p>
+                    <a href="/guia_visa" class="btn-card">Ver Pasos y Requisitos</a>
+                </div>
+            </div>
+
+            <!-- TRÁMITE 10: CARTILLA MILITAR -->
+            <div class="card">
+                <div class="card-img-wrapper">
+                    <span class="card-tag">Identidad</span>
+                    <img src="/static/img/icons/militar.png" alt="Militar" class="card-img">
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Cartilla Militar</h3>
+                    <p class="card-desc">Requisitos para jóvenes de clase y remisos, incluyendo el sorteo y la liberación de la cartilla.</p>
+                    <a href="/guia_militar" class="btn-card">Ver Pasos y Requisitos</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            const cards = document.querySelectorAll('.card');
+
+            // Función para filtrar
+            const filterCards = (searchTerm) => {
+                searchTerm = searchTerm.toLowerCase().trim();
+                cards.forEach(card => {
+                    const title = card.querySelector('.card-title').textContent.toLowerCase();
+                    const desc = card.querySelector('.card-desc').textContent.toLowerCase();
+                    const tag = card.querySelector('.card-tag').textContent.toLowerCase();
+
+                    if (title.includes(searchTerm) || desc.includes(searchTerm) || tag.includes(searchTerm)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            };
+
+            // Escuchar cambios en el input
+            searchInput.addEventListener('input', (e) => {
+                filterCards(e.target.value);
+            });
+
+            // Leer parámetro de la URL al cargar
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialSearch = urlParams.get('search');
+            if (initialSearch) {
+                searchInput.value = initialSearch;
+                filterCards(initialSearch);
+            }
+            // Helper para manejar modales
+            function setupModal(btnId, modalId, closeId) {
+                const btn = document.getElementById(btnId);
+                const modal = document.getElementById(modalId);
+                const close = document.getElementById(closeId);
+                if (btn && modal && close) {
+                    btn.addEventListener('click', (e) => { e.preventDefault(); modal.style.display = 'flex'; });
+                    close.addEventListener('click', () => { modal.style.display = 'none'; });
+                    window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+                }
+            }
+            setupModal('nosotros-btn', 'nosotrosModal', 'closeNosotros');
+        });
+    </script>
+    <!-- MODAL NOSOTROS -->
+    <div id="nosotrosModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" id="closeNosotros">&times;</button>
+            <h2>Sobre Nosotros</h2>
+            <div class="authors">
+                <h3>Autores:</h3>
+                <p>Luis Enrique Chavarria Gonzalez</p>
+                <p>Jesus Adrian Torres Lara</p>
+            </div>
+            <div class="social-media" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                <h3>Contáctanos:</h3>
+                <a href="https://wa.me/523319986833" target="_blank" rel="noopener noreferrer" class="social-link" style="width: auto; padding: 8px 25px;">
+                    <img src="/static/img/icons/whatsapp.png" alt="WhatsApp">
+                    <span>331 998 6833</span>
+                </a>
+            </div>
+            <div class="social-media">
+                <h3>Síguenos en:</h3>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/Tramigo" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <img src="/static/img/icons/facebook.png" alt="Facebook">
+                        <span>@Tramigo</span>
+                    </a>
+                    <a href="https://x.com/Tramigo" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <img src="/static/img/icons/twitter.png" alt="Twitter">
+                        <span>@Tramigo</span>
+                    </a>
+                    <a href="https://www.instagram.com/Tramigo" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <img src="/static/img/icons/instagram.png" alt="Instagram">
+                        <span>@Tramigo</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

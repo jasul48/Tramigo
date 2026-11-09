@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directorio por Estado - Tramigo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --primary-gradient: linear-gradient(135deg, #0066cc 0%, #004a99 100%);
+            --hero-bg-gradient: linear-gradient(135deg, #f0f7ff 0%, #dbeafe 100%);
+            --text-dark: #0b2246;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --bg-light: #f8fafc;
+        }
+
+        body { margin: 0; font-family: 'Inter', sans-serif; color: var(--text-dark); background-color: var(--bg-light); }
+
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 5%; background: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { display: flex; flex-direction: column; align-items: flex-start; text-decoration: none; }
+        .logo-title { color: #0b2246; font-size: 32px; font-weight: 800; font-style: italic; margin: 0; letter-spacing: -1px; }
+        .logo-subtitle { font-size: 11px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin-top: 2px; }
+
+        .page-header { background: var(--hero-bg-gradient); padding: 4rem 5%; text-align: center; }
+        .page-header h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin: 0 0 1rem 0; }
+        .page-header p { font-size: 1.2rem; max-width: 800px; margin: 0 auto; color: var(--text-muted); }
+        .back-link { display: inline-block; margin-bottom: 1.5rem; color: var(--primary-blue); text-decoration: none; font-weight: 700; background: rgba(0, 102, 204, 0.08); padding: 0.6rem 1.2rem; border-radius: 2rem; }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 3rem 5%; text-align: center; }
+        
+        .selector-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 2rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 102, 204, 0.1);
+        }
+
+        label { display: block; font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem; color: var(--text-dark); }
+
+        select {
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1.2rem;
+            border-radius: 1rem;
+            border: 2px solid #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        select:focus { outline: none; border-color: var(--primary-blue); }
+
+        .results-box {
+            margin-top: 3rem;
+            display: none;
+            text-align: left;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .state-title { font-size: 2rem; font-weight: 800; color: var(--primary-blue); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        
+        .portal-links { display: grid; gap: 1.5rem; }
+        
+        .portal-card {
+            background: #f0f7ff;
+            padding: 1.5rem;
+            border-radius: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-dark);
+            border: 1px solid rgba(0, 102, 204, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .portal-card:hover { transform: translateX(10px); background: #e0efff; border-color: var(--primary-blue); }
+        
+        .portal-info strong { font-size: 1.2rem; display: block; margin-bottom: 4px; }
+        .portal-info span { color: var(--text-muted); font-size: 0.95rem; }
+        
+        .portal-icon { font-size: 1.5rem; }
+
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <a href="/index" class="logo">
+            <span class="logo-title">Tramigo</span>
+            <div class="logo-subtitle">Trámites & Gestión Administrativa</div>
+        </a>
+    </header>
+
+    <section class="page-header">
+        <a href="/categorias" class="back-link">← Volver a Categorías</a>
+        <h1>Portales Oficiales por Estado</h1>
+        <p>Selecciona tu estado para encontrar directamente el portal de pagos y módulos oficiales.</p>
+    </section>
+
+    <div class="container">
+        <div class="selector-box">
+            <label for="stateSelector">📍 ¿En qué estado te encuentras?</label>
+            <select id="stateSelector">
+                <option value="">-- Selecciona un Estado --</option>
+                <option value="cdmx">Ciudad de México</option>
+                <option value="edomex">Estado de México</option>
+                <option value="jalisco">Jalisco</option>
+                <option value="nuevo-leon">Nuevo León</option>
+                <option value="puebla">Puebla</option>
+                <option value="otros">Otros Estados...</option>
+            </select>
+        </div>
+
+        <div id="results" class="results-box">
+            <div class="state-title" id="resStateName">
+                <!-- Se llena con JS -->
+            </div>
+            
+            <div class="portal-links">
+                <a href="#" id="linkPago" target="_blank" class="portal-card">
+                    <div class="portal-info">
+                        <strong>💳 Pago de Derechos</strong>
+                        <span>Portal de Finanzas y Línea de Captura</span>
+                    </div>
+                    <div class="portal-icon">➡️</div>
+                </a>
+                
+                <a href="#" id="linkCita" target="_blank" class="portal-card">
+                    <div class="portal-info">
+                        <strong>📅 Citas y Módulos</strong>
+                        <span>Agenda tu visita al módulo oficial</span>
+                    </div>
+                    <div class="portal-icon">➡️</div>
+                </a>
+                
+                <a href="#" id="linkCivil" target="_blank" class="portal-card">
+                    <div class="portal-info">
+                        <strong>📑 Registro Civil</strong>
+                        <span>Trámites de Actas y Correcciones</span>
+                    </div>
+                    <div class="portal-icon">➡️</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const stateData = {
+            'cdmx': {
+                name: 'Ciudad de México',
+                pago: 'https://data.finanzas.cdmx.gob.mx/formato_lc/licencias',
+                cita: 'https://app.semovi.cdmx.gob.mx/citas/',
+                civil: 'https://www.rcivil.cdmx.gob.mx/solicitudactas/'
+            },
+            'edomex': {
+                name: 'Estado de México',
+                pago: 'https://smapyt.edomex.gob.mx/pago/licencia',
+                cita: 'https://smapyt.edomex.gob.mx/citas/public/index.jsp',
+                civil: 'https://registrocivil.edomex.gob.mx/'
+            },
+            'jalisco': {
+                name: 'Jalisco',
+                pago: 'https://licencias-transporte.jalisco.gob.mx/',
+                cita: 'https://citas.jalisco.gob.mx/transporte',
+                civil: 'https://registrocivil.jalisco.gob.mx/'
+            },
+            'nuevo-leon': {
+                name: 'Nuevo León',
+                pago: 'https://www.icvnl.gob.mx/Tramite/1',
+                cita: 'https://www.icvnl.gob.mx/Citas',
+                civil: 'https://www.nl.gob.mx/registrocivil'
+            },
+            'puebla': {
+                name: 'Puebla',
+                pago: 'https://rl.puebla.gob.mx/',
+                cita: 'https://citasenlinea.puebla.gob.mx/',
+                civil: 'https://registrocivil.puebla.gob.mx/'
+            }
+        };
+
+        const selector = document.getElementById('stateSelector');
+        const results = document.getElementById('results');
+        const stateName = document.getElementById('resStateName');
+        const linkPago = document.getElementById('linkPago');
+        const linkCita = document.getElementById('linkCita');
+        const linkCivil = document.getElementById('linkCivil');
+
+        selector.addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (val === 'otros') {
+                window.location.href = 'https://www.gob.mx/tramites';
+                return;
+            }
+            
+            if (val && stateData[val]) {
+                const data = stateData[val];
+                stateName.innerHTML = `<span>🇲🇽</span> ${data.name}`;
+                linkPago.href = data.pago;
+                linkCita.href = data.cita;
+                linkCivil.href = data.civil;
+                results.style.display = 'block';
+            } else {
+                results.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

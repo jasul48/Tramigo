@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bancos Disponibles - Tramigo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --primary-gradient: linear-gradient(135deg, #0066cc 0%, #004a99 100%);
+            --hero-bg-gradient: linear-gradient(135deg, #f0f7ff 0%, #dbeafe 100%);
+            --text-dark: #0b2246;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --bg-light: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.7);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { display: flex; flex-direction: column; align-items: flex-start; text-decoration: none; }
+        .logo-title { color: #0b2246; font-size: 32px; font-weight: 800; font-style: italic; margin: 0; letter-spacing: -1px; }
+        .logo-subtitle { font-size: 11px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin-top: 2px; }
+
+        .page-header {
+            background: var(--hero-bg-gradient);
+            padding: 5rem 5%;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 700;
+            background: rgba(0, 102, 204, 0.08);
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover { background: rgba(0, 102, 204, 0.15); transform: translateX(-5px); }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 5%;
+        }
+
+        .bank-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .bank-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        .bank-card.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .bank-card:hover {
+            transform: translateY(-12px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(0, 102, 204, 0.12);
+            border-color: var(--primary-blue);
+        }
+
+        .bank-logo {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
+            transition: transform 0.4s ease;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.05));
+        }
+
+        .bank-card:hover .bank-logo { transform: scale(1.15) rotate(2deg); }
+
+        .bank-name { font-size: 1.6rem; font-weight: 800; margin: 0; color: var(--text-dark); }
+        .bank-desc { font-size: 1rem; color: var(--text-muted); line-height: 1.5; margin: 0; }
+
+        .btn-guide {
+            margin-top: 1rem;
+            padding: 0.9rem 2rem;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 2rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 6px 15px rgba(0, 102, 204, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .bank-card:hover .btn-guide { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 102, 204, 0.3); }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, index * 100);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.bank-card').forEach(card => observer.observe(card));
+        });
+    </script>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="/index" class="logo">
+            <span class="logo-title">Tramigo</span>
+            <div class="logo-subtitle">Trámites & Gestión Administrativa</div>
+        </a>
+    </header>
+
+    <section class="page-header">
+        <a href="/categorias" class="back-link">← Volver a Categorías</a>
+        <h1>Apertura de Cuentas Bancarias</h1>
+        <p>Selecciona tu banco para ver la guía detallada de requisitos y pasos.</p>
+    </section>
+
+    <div class="container">
+        <div class="bank-grid">
+            <!-- BBVA -->
+            <a href="/guia_bbva" class="bank-card">
+                <img src="/static/img/bancos/bbva.png" alt="BBVA" class="bank-logo">
+                <h3 class="bank-name">BBVA</h3>
+                <p class="bank-desc">Líder en banca digital. Guía para cuenta de ahorros y nómina.</p>
+                <div class="btn-guide">Ver Guía</div>
+            </a>
+
+            <!-- Citibanamex -->
+            <a href="/guia_citibanamex" class="bank-card">
+                <img src="/static/img/bancos/citibanamex.png" alt="Citibanamex" class="bank-logo">
+                <h3 class="bank-name">Citibanamex</h3>
+                <p class="bank-desc">Tradición y respaldo. Requisitos para Cuenta Priority y básica.</p>
+                <div class="btn-guide">Ver Guía</div>
+            </a>
+
+            <!-- Santander -->
+            <a href="/guia_santander" class="bank-card">
+                <img src="/static/img/bancos/santander.png" alt="Santander" class="bank-logo">
+                <h3 class="bank-name">Santander</h3>
+                <p class="bank-desc">Innovación constante. Pasos para abrir tu cuenta Santander LikeU.</p>
+                <div class="btn-guide">Ver Guía</div>
+            </a>
+
+            <!-- Banco Azteca -->
+            <a href="/guia_banco_azteca" class="bank-card">
+                <img src="/static/img/bancos/banco_azteca.png" alt="Banco Azteca" class="bank-logo">
+                <h3 class="bank-name">Banco Azteca</h3>
+                <p class="bank-desc">Accesibilidad total. Guía para Guardadito y nómina.</p>
+                <div class="btn-guide">Ver Guía</div>
+            </a>
+
+            <!-- Banorte -->
+            <a href="/guia_banorte" class="bank-card">
+                <img src="/static/img/bancos/banorte.png" alt="Banorte" class="bank-logo">
+                <h3 class="bank-name">Banorte</h3>
+                <p class="bank-desc">El banco fuerte de México. Requisitos para Enlace Personal.</p>
+                <div class="btn-guide">Ver Guía</div>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

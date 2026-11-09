@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Personas (CRUD) - Tramigo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --primary-hover: #0052a3;
+            --primary-gradient: linear-gradient(135deg, #0066cc 0%, #004a99 100%);
+            --hero-bg-gradient: linear-gradient(135deg, #f0f7ff 0%, #dbeafe 100%);
+            --text-dark: #0b2246;
+            --text-muted: #64748b;
+            --white: #ffffff;
+            --bg-light: #f8fafc;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--hero-bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+        }
+
+        .logo-title {
+            color: #0b2246;
+            font-size: 28px;
+            font-weight: 800;
+            font-style: italic;
+            margin: 0;
+            letter-spacing: -1px;
+        }
+
+        .logo-subtitle {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #444;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-blue);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem 3rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0 0 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        /* FLASH ALERTS */
+        .flash-alert {
+            padding: 1rem 1.25rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .flash-success {
+            background-color: #dcfce7;
+            color: #15803d;
+            border-left: 5px solid #22c55e;
+        }
+
+        .flash-error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border-left: 5px solid #ef4444;
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--white);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 102, 204, 0.06);
+            border: 1px solid rgba(0, 102, 204, 0.05);
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0 0 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        /* FORMS */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-light);
+            border: 1.5px solid var(--border);
+            border-radius: 0.6rem;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: var(--text-dark);
+            transition: all 0.2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+            background: var(--white);
+        }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.6rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 102, 204, 0.35);
+        }
+
+        .btn-edit {
+            background: #eff6ff;
+            color: var(--primary-blue);
+            padding: 0.45rem 0.9rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-edit:hover {
+            background: #dbeafe;
+        }
+
+        .btn-delete {
+            background: #fef2f2;
+            color: var(--danger);
+            padding: 0.45rem 0.9rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+        }
+
+        /* SEARCH BAR */
+        .search-box {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-box input {
+            flex: 1;
+        }
+
+        /* TABLE */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.9rem 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 0.9rem 1rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .badge-id {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-weight: 700;
+            padding: 0.25rem 0.6rem;
+            border-radius: 0.4rem;
+            font-size: 0.85rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="/index" class="logo">
+            <span class="logo-title">Tramigo</span>
+            <div class="logo-subtitle">Gestión de Personas</div>
+        </a>
+        <nav class="nav-links">
+            <a href="/index">Inicio</a>
+            <a href="/perfil">Mi Perfil</a>
+            <a href="/login" style="color: var(--primary-blue);">Ingresar</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>📋 Registro y Consulta de Personas</h1>
+            <p>Módulo de gestión del microservicio de usuarios (db_usuarios)</p>
+        </div>
+
+        <!-- Flash messages -->
+        <div th:if="${successMessage != null}" class="flash-alert flash-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage != null}" class="flash-alert flash-error" th:text="${errorMessage}"></div>
+
+        <!-- Formulario para agregar -->
+        <div class="card">
+            <h2>➕ Agregar Nueva Persona</h2>
+            <form action="/agregar" method="POST">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="id">ID Único</label>
+                        <input type="number" id="id" name="id" required placeholder="Ej. 101" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre">Nombre Completo</label>
+                        <input type="text" id="nombre" name="nombre" required placeholder="Ej. María González">
+                    </div>
+                    <div class="form-group">
+                        <label for="edad">Edad</label>
+                        <input type="number" id="edad" name="edad" required placeholder="Ej. 28" min="0" max="150">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tabla y búsqueda -->
+        <div class="card">
+            <h2>👥 Listado de Personas</h2>
+
+            <form action="/crud" method="GET" class="search-box">
+                <input type="text" name="q" th:value="${query}" placeholder="Buscar por ID o nombre...">
+                <button type="submit" class="btn btn-primary">🔍 Buscar</button>
+                <a th:if="${query != null and !query.isEmpty()}" href="/crud" class="btn" style="background:#f1f5f9; color:#475569;">Limpiar</a>
+            </form>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;">ID</th>
+                            <th>Nombre</th>
+                            <th style="width: 100px;">Edad</th>
+                            <th style="width: 180px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p : ${personas}">
+                            <td><span class="badge-id" th:text="${p.id}">1</span></td>
+                            <td th:text="${p.nombre}">Nombre</td>
+                            <td th:text="${p.edad} + ' años'">25 años</td>
+                            <td>
+                                <div class="actions-cell">
+                                    <a th:href="@{'/editar/' + ${p.id}}" class="btn btn-edit">✏️ Editar</a>
+                                    <a th:href="@{'/eliminar/' + ${p.id}}" 
+                                       class="btn btn-delete" 
+                                       onclick="return confirm('¿Seguro que deseas eliminar este registro?')">🗑️ Eliminar</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${personas == null or personas.isEmpty()}">
+                            <td colspan="4" class="empty-state">
+                                🔍 No se encontraron registros de personas.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

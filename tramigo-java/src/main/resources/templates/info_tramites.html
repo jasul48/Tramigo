@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información Detallada de Trámites - Tramigo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --primary-gradient: linear-gradient(135deg, #0066cc 0%, #004a99 100%);
+            --hero-bg-gradient: linear-gradient(135deg, #f0f7ff 0%, #dbeafe 100%);
+            --text-dark: #0b2246;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+        }
+
+        /* NAVEGACIÓN */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { display: flex; flex-direction: column; align-items: flex-start; text-decoration: none; }
+        .logo-title { color: #0b2246; font-size: 32px; font-weight: 800; font-style: italic; margin: 0; letter-spacing: -1px; }
+        .logo-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { text-decoration: none; color: #444; font-weight: 600; font-size: 0.9rem; transition: color 0.3s ease; }
+        .nav-links a:hover { color: var(--primary-blue); }
+
+        .nav-right { display: flex; align-items: center; gap: 2rem; }
+        .user-profile {
+            display: flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px; border-radius: 50%;
+            background-color: var(--bg-bottom);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+        }
+        .user-profile:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.2);
+        }
+        .user-profile img { width: 24px; height: 24px; }
+
+        /* HEADER DE PÁGINA */
+        .page-header {
+            background: var(--hero-bg-gradient);
+            padding: 5rem 5%;
+            text-align: center;
+            color: var(--text-dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 102, 204, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 50%, rgba(0, 102, 204, 0.03) 0%, transparent 50%);
+            z-index: 0;
+        }
+        .page-header h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin: 0 0 1rem 0;
+            color: var(--text-dark);
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header p {
+            font-size: 1.15rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: var(--text-muted);
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 700;
+            background: rgba(0, 102, 204, 0.08);
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-link:hover {
+            background: rgba(0, 102, 204, 0.15);
+            transform: translateX(-5px);
+        }
+
+        /* CONTENIDO DETALLADO */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 5%;
+        }
+
+        .info-card {
+            background: var(--white);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            border: 1px solid rgba(0, 102, 204, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 102, 204, 0.08);
+        }
+
+        .info-icon {
+            background-color: #e6f0ff;
+            min-width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .info-icon img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .info-content h2 {
+            margin: 0 0 1rem 0;
+            font-size: 1.5rem;
+            color: #111;
+            font-weight: 800;
+        }
+
+        .info-content p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .details-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .details-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            font-size: 0.95rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .details-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--primary-blue);
+            font-weight: bold;
+        }
+
+        /* BANCOS ESPECIALES */
+        .bank-logos {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .bank-tag {
+            background: #f0f7ff;
+            color: var(--primary-blue);
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border: 1px solid rgba(0, 102, 204, 0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .bank-tag:hover {
+            background: rgba(0, 102, 204, 0.1);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .info-card { flex-direction: column; gap: 1.5rem; padding: 1.5rem; }
+            .page-header h1 { font-size: 2rem; }
+        }
+        /* --- MODAL NOSOTROS --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            position: relative;
+            max-width: 400px;
+            width: 90%;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover { color: #d32f2f; }
+
+        .authors h3, .social-media h3 {
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .authors p { margin: 5px 0; font-weight: 600; color: #444; }
+
+        .social-media { margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; }
+
+        .social-icons { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+
+        .social-link {
+            display: flex; align-items: center; gap: 10px; text-decoration: none;
+            color: #333; font-weight: 600; padding: 8px 20px; border-radius: 30px;
+            background: #f5f8ff; transition: all 0.3s ease; width: 160px; justify-content: center;
+        }
+
+        .social-link:hover {
+            background: #e0eaff; transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.1);
+        }
+
+        .social-link img { width: 30px; height: 30px; }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="/index" class="logo">
+            <span class="logo-title">Tramigo</span>
+            <div class="logo-subtitle">Trámites & Gestión Administrativa</div>
+        </a>
+        <div class="nav-right">
+            <nav class="nav-links">
+                <a href="/index">Inicio</a>
+                <a href="/categorias">Trámites</a>
+                <a href="#" id="nosotros-btn">Nosotros</a>
+            </nav>
+            <th:block th:if="${session.usuario_id != null}">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <a href="/mis_documentos" style="text-decoration: none; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 5px; transition: color 0.3s;" onmouseover="this.style.color='var(--primary-blue)'" onmouseout="this.style.color='var(--text-dark)'">
+                    <img src="/static/img/icons/folder_docs.png" alt="Docs">
+                    Mis Documentos
+                </a>
+                <a href="/perfil" style="text-decoration: none; display: flex; align-items: center; gap: 8px; transition: opacity 0.3s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                    <span style="font-weight: 700; font-size: 1rem; color: var(--text-dark);">Hola, <span th:text="${session.nombre}">Usuario</span></span>
+                </a>
+                <a href="/perfil" title="Ir a mi Perfil" style="text-decoration: none; display: flex; align-items: center; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                    <img th:if="${session.foto_perfil != null and !session.foto_perfil.isEmpty() and session.foto_perfil != 'default_profile.png'}" th:src="@{'/uploads/perfiles/' + ${session.foto_perfil}}" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-blue); box-shadow: 0 4px 10px rgba(0, 102, 204, 0.2);">
+                    <img th:unless="${session.foto_perfil != null and !session.foto_perfil.isEmpty() and session.foto_perfil != 'default_profile.png'}" src="/static/img/icons/user_circle.png" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-blue); opacity: 0.8;">
+                </a>
+            </div>
+            </th:block><th:block th:unless="${session.usuario_id != null}">
+            <a href="/login" class="user-profile" title="Iniciar Sesión">
+                <img src="/static/img/icons/user_circle.png" alt="Usuario">
+            </a>
+            </th:block>
+        </div>
+    </header>
+
+    <section class="page-header">
+        <a href="/index" class="back-link">← Volver al Inicio</a>
+        <h1>Catálogo de Información</h1>
+        <p>Conoce exactamente qué tipo de guías y para qué instituciones tenemos soporte actualmente.</p>
+    </section>
+
+    <div class="container">
+        
+        <!-- Finanzas -->
+        <div class="info-card">
+            <div class="info-icon">
+                <img src="/static/img/icons/tarjetas.png" alt="Bancos">
+            </div>
+            <div class="info-content">
+                <h2>Apertura de Cuentas Bancarias</h2>
+                <p>Nuestras guías te explican paso a paso cómo abrir una cuenta de débito básica (sin comisiones) o una cuenta de nómina. Actualmente contamos con guías visuales verificadas para los siguientes bancos:</p>
+                <div class="bank-logos">
+                    <a href="/guia_bbva" class="bank-tag">BBVA</a>
+                    <a href="/guia_citibanamex" class="bank-tag">Citibanamex</a>
+                    <a href="/guia_santander" class="bank-tag">Santander</a>
+                    <a href="/guia_banco_azteca" class="bank-tag">Banco Azteca</a>
+                    <a href="/guia_banorte" class="bank-tag">Banorte</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Identidad -->
+        <div class="info-card">
+            <div class="info-icon">
+                <img src="/static/img/icons/ine.png" alt="INE">
+            </div>
+            <div class="info-content">
+                <h2>Credencial para Votar (INE)</h2>
+                <p>Abarcamos todos los escenarios posibles para tramitar tu credencial en los módulos del INE. Las guías disponibles son:</p>
+                <ul class="details-list">
+                    <li>Trámite por primera vez (18 años)</li>
+                    <li>Renovación por pérdida de vigencia</li>
+                    <li>Reposición por robo o extravío</li>
+                    <li>Cambio de domicilio</li>
+                </ul>
+                <h2 style="font-size: 1.2rem; margin-top: 1.5rem;">Cartilla del Servicio Militar Nacional</h2>
+                <p>Guía para el trámite de la precartilla y su posterior liberación, enfocada en jóvenes de clase y remisos.</p>
+            </div>
+        </div>
+
+        <!-- Acta de Nacimiento -->
+        <div class="info-card">
+            <div class="info-icon">
+                <img src="/static/img/icons/acta.png" alt="Acta de Nacimiento">
+            </div>
+            <div class="info-content">
+                <h2>Acta de Nacimiento</h2>
+                <p>Evita hacer filas en el registro civil. Te enseñamos a realizar el trámite de tu acta completamente
+                    por internet:</p>
+                <ul class="details-list">
+                    <li>Descarga de Acta Certificada en PDF</li>
+                    <li>Validación de actas en línea</li>
+                    <li>Pago referenciado oficial</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CURP -->
+        <div class="info-card">
+            <div class="info-icon">
+                <img src="/static/img/icons/curp.png" alt="CURP">
+            </div>
+            <div class="info-content">
+                <h2>Clave Única de Registro de Población (CURP)</h2>
+                <p>Consulta, descarga e imprime tu CURP de manera gratuita y oficial desde el portal del gobierno:</p>
+                <ul class="details-list">
+                    <li>Consulta e impresión de CURP</li>
+                    <li>Descarga de constancia oficial</li>
+                    <li>Corrección de errores en tu CURP</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- RFC y Cédula -->
+        <div class="info-card">
+            <div class="info-icon">
+                <img src="/static/img/icons/rfc.png" alt="RFC">
+            </div>
+            <div class="info-content">
+                <h2>RFC y Cédula Profesional</h2>
+                <p>Documentos fundamentales para el ejercicio profesional y laboral en México:</p>
+                <ul class="details-list">
+                    <li><strong>RFC:</strong> Inscripción en el SAT por primera vez.</li>
+                    <li><strong>RFC:</strong> Obtención de Constancia de Situación Fiscal.</li>
+                    <li><strong>Cédula:</strong> Trámite de Cédula Profesional Electrónica (SEP).</li>
+                    <li><strong>Cédula:</strong> Requisitos para grado de Licenciatura y Posgrado.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="info-card">
+            <div class="info-icon">
+                <img src="/static/img/icons/passport.png" alt="Pasaporte">
+            </div>
+            <div class="info-content">
+                <h2>Pasaporte Mexicano (SRE)</h2>
+                <p>El trámite de pasaporte puede ser confuso. Lo simplificamos detallando los documentos exactos y cómo obtener tu cita oficial sin caer en fraudes:</p>
+                <ul class="details-list">
+                    <li>Agendar cita vía WhatsApp oficial</li>
+                    <li>Agendar cita en el portal SRE</li>
+                    <li>Pasaporte por primera vez</li>
+                    <li>Renovación de pasaporte</li>
+                </ul>
+                <h2 style="font-size: 1.2rem; margin-top: 1.5rem;">Visa Americana (B1/B2)</h2>
+                <p>Información detallada para solicitar la visa de turista por primera vez o renovación:</p>
+                <ul class="details-list">
+                    <li>Llenado del formulario DS-160</li>
+                    <li>Pago de la cuota de solicitud (MRV)</li>
+                    <li>Citas en el CAS y Consulado</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Adultos Mayores -->
+        <div class="info-card">
+            <div class="info-icon">
+                <img src="/static/img/icons/inapam.png" alt="Adultos Mayores">
+            </div>
+            <div class="info-content">
+                <h2>Tarjeta INAPAM</h2>
+                <p>Apoyamos a nuestros adultos mayores a ejercer sus derechos de forma fácil. Incluye mapas y requisitos sin lenguaje técnico:</p>
+                <ul class="details-list">
+                    <li>Requisitos actualizados</li>
+                    <li>Ubicación de Módulos de Afiliación</li>
+                    <li>Lista de beneficios y descuentos principales</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Vehicular -->
+        <div class="info-card">
+            <div class="info-icon">
+                <img src="/static/img/icons/licencia.png" alt="Licencia">
+            </div>
+            <div class="info-content">
+                <h2>Trámites Vehiculares</h2>
+                <p>Todo lo necesario para conducir legalmente y mantener tu auto al corriente. Soporte actual para CDMX y Estado de México:</p>
+                <ul class="details-list">
+                    <li>Licencia Tipo A (Automovilista)</li>
+                    <li>Renovación de Licencia</li>
+                    <li>Pago de Tenencia / Refrendo</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL NOSOTROS -->
+    <div id="nosotrosModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-modal" id="closeNosotros">&times;</button>
+            <h2>Sobre Nosotros</h2>
+            <div class="authors">
+                <h3>Autores:</h3>
+                <p>Luis Enrique Chavarria Gonzalez</p>
+                <p>Jesus Adrian Torres Lara</p>
+            </div>
+            <div class="social-media" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                <h3>Contáctanos:</h3>
+                <a href="https://wa.me/523319986833" target="_blank" rel="noopener noreferrer" class="social-link" style="width: auto; padding: 8px 25px;">
+                    <img src="/static/img/icons/whatsapp.png" alt="WhatsApp">
+                    <span>331 998 6833</span>
+                </a>
+            </div>
+            <div class="social-media">
+                <h3>Síguenos en:</h3>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/Tramigo" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <img src="/static/img/icons/facebook.png" alt="Facebook">
+                        <span>@Tramigo</span>
+                    </a>
+                    <a href="https://x.com/Tramigo" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <img src="/static/img/icons/twitter.png" alt="Twitter">
+                        <span>@Tramigo</span>
+                    </a>
+                    <a href="https://www.instagram.com/Tramigo" target="_blank" rel="noopener noreferrer" class="social-link">
+                        <img src="/static/img/icons/instagram.png" alt="Instagram">
+                        <span>@Tramigo</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            function setupModal(btnId, modalId, closeId) {
+                const btn = document.getElementById(btnId);
+                const modal = document.getElementById(modalId);
+                const close = document.getElementById(closeId);
+                if (btn && modal && close) {
+                    btn.addEventListener('click', (e) => { e.preventDefault(); modal.style.display = 'flex'; });
+                    close.addEventListener('click', () => { modal.style.display = 'none'; });
+                    window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+                }
+            }
+            setupModal('nosotros-btn', 'nosotrosModal', 'closeNosotros');
+        });
+    </script>
+</body>
+</html>

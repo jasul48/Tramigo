@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Soporte - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --text-dark: #0b2246;
+            --bg-light: #f8fafc;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            padding: 40px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 { margin-bottom: 30px; font-weight: 800; display: flex; align-items: center; gap: 15px; }
+        .ticket-list { display: grid; gap: 20px; }
+        .ticket-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        .ticket-info strong { color: var(--primary-blue); }
+        .date { font-size: 0.85rem; color: #94a3b8; }
+        .subject { font-size: 1.2rem; font-weight: 700; margin-bottom: 10px; color: #1e293b; }
+        .message { line-height: 1.6; color: #475569; white-space: pre-wrap; }
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: #e2e8f0;
+        }
+        .badge-pendiente { background: #fef3c7; color: #92400e; }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/index" class="back-btn">← Volver al sitio</a>
+        <h1>🎫 Panel de Tickets de Soporte</h1>
+
+        <div class="ticket-list">
+            <th:block th:if="${mensajes != null and !mensajes.isEmpty()}">
+                <div class="ticket-card" th:each="msg : ${mensajes}">
+                    <div class="ticket-header">
+                        <div class="ticket-info">
+                            <strong th:text="${msg.nombre}">Nombre</strong> &lt;<span th:text="${msg.correo}">correo@ejemplo.com</span>&gt;
+                        </div>
+                        <span class="badge" th:classappend="${msg.estado == 'Resuelto' ? 'badge-resuelto' : (msg.estado == 'En proceso' ? 'badge-proceso' : 'badge-pendiente')}" th:text="${msg.estado}">Pendiente</span>
+                    </div>
+                    <div class="subject" th:text="${msg.asunto}">Asunto</div>
+                    <div class="message" th:text="${msg.mensaje}">Mensaje</div>
+                    <div class="date" style="margin-top: 15px;">Recibido el: <span th:text="${#temporals.format(msg.fechaCreacion, 'dd/MM/yyyy HH:mm')}">01/01/2026</span></div>
+                </div>
+            </th:block>
+            <th:block th:if="${mensajes == null or mensajes.isEmpty()}">
+                <p>No hay mensajes de soporte por el momento.</p>
+            </th:block>
+        </div>
+    </div>
+</body>
+</html>

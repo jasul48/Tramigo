@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Documentos - Tramigo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --primary-gradient: linear-gradient(135deg, #0066cc 0%, #004a99 100%);
+            --hero-bg-gradient: linear-gradient(135deg, #f0f7ff 0%, #dbeafe 100%);
+            --text-dark: #0b2246;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background: var(--hero-bg-gradient);
+            min-height: 100vh;
+        }
+
+        /* NAVEGACIÓN */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { display: flex; flex-direction: column; align-items: flex-start; text-decoration: none; }
+        .logo-title { color: #0b2246; font-size: 32px; font-weight: 800; font-style: italic; margin: 0; letter-spacing: -1px; }
+        .logo-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        
+        .nav-right { display: flex; align-items: center; gap: 2rem; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: #444; font-weight: 700; font-size: 1.1rem; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--primary-blue); }
+
+        .container {
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 0 20px;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .header-section h1 { font-size: 2.5rem; font-weight: 800; margin: 0; }
+        .header-section p { color: var(--text-muted); font-size: 1.1rem; margin-top: 10px; }
+
+        /* UPLOAD SECTION */
+        .upload-card {
+            background: var(--white);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 102, 204, 0.05);
+            margin-bottom: 3rem;
+            border: 1px solid rgba(0, 102, 204, 0.05);
+        }
+
+        .upload-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 1.5rem;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label { font-weight: 700; font-size: 0.9rem; }
+
+        input[type="text"], input[type="file"] {
+            padding: 0.8rem;
+            border-radius: 0.8rem;
+            border: 1.5px solid #e2e8f0;
+            font-family: inherit;
+        }
+
+        .btn-upload {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 0.8rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            height: 48px;
+        }
+        .btn-upload:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 102, 204, 0.2); }
+
+        /* DOCUMENTS GRID */
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .doc-card {
+            background: var(--white);
+            border-radius: 1.2rem;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 102, 204, 0.05);
+            transition: all 0.3s;
+        }
+        .doc-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0, 102, 204, 0.1); }
+
+        .doc-icon {
+            width: 50px;
+            height: 50px;
+            background: #f0f7ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .doc-icon img { width: 30px; height: 30px; }
+
+        .doc-info { flex: 1; min-width: 0; }
+        .doc-info h3 { margin: 0; font-size: 1.1rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .doc-info p { margin: 3px 0 0 0; font-size: 0.85rem; color: var(--text-muted); }
+
+        .doc-actions { display: flex; gap: 8px; }
+        .btn-action {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-view { background: #e0f2fe; color: #0369a1; }
+        .btn-view:hover { background: #bae6fd; }
+        .btn-download-file { background: #f0fdf4; color: #15803d; }
+        .btn-download-file:hover { background: #dcfce7; }
+        .btn-delete { background: #fee2e2; color: #dc2626; }
+        .btn-delete:hover { background: #fecaca; }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 2rem;
+            border: 2px dashed #cbd5e1;
+            grid-column: 1 / -1;
+        }
+
+        /* Flash messages */
+        .flash-messages { margin-bottom: 2rem; }
+        .flash-message {
+            padding: 1rem;
+            border-radius: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .flash-success { background: #dcfce7; color: #166534; border-left: 5px solid #22c55e; }
+        .flash-error { background: #fee2e2; color: #991b1b; border-left: 5px solid #ef4444; }
+
+        @media (max-width: 768px) {
+            .upload-form { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="/index" class="logo">
+            <span class="logo-title">Tramigo</span>
+            <div class="logo-subtitle">Trámites & Gestión Administrativa</div>
+        </a>
+        <div class="nav-right">
+            <nav class="nav-links">
+                <a href="/index">Inicio</a>
+                <a href="/perfil">Mi Perfil</a>
+            </nav>
+            <a href="/logout" style="color: #ef4444; font-weight: 700; text-decoration: none; font-size: 0.9rem; padding: 8px 16px; background: #fee2e2; border-radius: 30px;">Salir</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="header-section">
+            <h1>📂 Mis Documentos</h1>
+            <p>Guarda tus archivos importantes de forma segura. Solo tú puedes verlos.</p>
+        </div>
+
+        <div class="flash-container" th:if="${successMessage != null or errorMessage != null}">
+            <div class="flash-alert flash-success" th:if="${successMessage != null}" th:text="${successMessage}"></div>
+            <div class="flash-alert flash-error" th:if="${errorMessage != null}" th:text="${errorMessage}"></div>
+        </div>
+
+        <div class="upload-card">
+            <form action="/mis_documentos" method="POST" enctype="multipart/form-data" class="upload-form">
+                <div class="form-group">
+                    <label for="nombre_doc">Nombre del documento (opcional)</label>
+                    <input type="text" id="nombre_doc" name="nombre_doc" placeholder="Ej: Acta de Nacimiento">
+                </div>
+                <div class="form-group">
+                    <label for="archivo_doc">Seleccionar archivo</label>
+                    <input type="file" id="archivo_doc" name="archivo_doc" required>
+                </div>
+                <button type="submit" class="btn-upload">Subir Archivo</button>
+            </form>
+        </div>
+
+        <div class="docs-grid">
+            <th:block th:if="${documentos != null and !documentos.isEmpty()}">
+                <div class="doc-card" th:each="doc : ${documentos}">
+                    <div class="doc-icon">
+                        <img th:if="${doc.tipoArchivo == 'jpg' or doc.tipoArchivo == 'jpeg' or doc.tipoArchivo == 'png'}" src="/static/img/icons/image.png" alt="Imagen">
+                        <img th:if="${doc.tipoArchivo == 'pdf'}" src="/static/img/icons/pdf.png" alt="PDF">
+                        <img th:if="${doc.tipoArchivo != 'jpg' and doc.tipoArchivo != 'jpeg' and doc.tipoArchivo != 'png' and doc.tipoArchivo != 'pdf'}" src="/static/img/icons/file.png" alt="Archivo">
+                    </div>
+                    <div class="doc-info">
+                        <h3 th:text="${doc.nombrePersonalizado}">Documento</h3>
+                        <p><span th:text="${#temporals.format(doc.fechaSubida, 'dd/MM/yyyy')}">01/01/2026</span> • <span th:text="${doc.tipoArchivo != null ? doc.tipoArchivo.toUpperCase() : ''}">PDF</span></p>
+                    </div>
+                    <div class="doc-actions">
+                        <a th:href="@{'/uploads/documentos/' + ${doc.nombreArchivo}}" target="_blank" class="btn-action btn-view" title="Ver online">
+                            <img src="/static/img/icons/visible.png" alt="Ver">
+                        </a>
+                        <a th:href="@{'/uploads/documentos/' + ${doc.nombreArchivo}}" th:attr="download=${doc.nombrePersonalizado}" class="btn-action btn-download-file" title="Descargar">
+                            <img src="/static/img/icons/download.png" alt="Descargar">
+                        </a>
+                        <a th:href="@{'/eliminar_documento/' + ${doc.documentoId}}" class="btn-action btn-delete" title="Eliminar" onclick="return confirm('¿Estás seguro de eliminar este documento?')">
+                            <img src="/static/img/icons/trash.png" alt="Eliminar">
+                        </a>
+                    </div>
+                </div>
+            </th:block>
+            <th:block th:if="${documentos == null or documentos.isEmpty()}">
+                <div class="empty-state">
+                    <img src="/static/img/icons/folder-invoices.png" alt="Carpeta vacía">
+                    <h3>Aún no tienes documentos</h3>
+                    <p>Sube tus archivos importantes para tenerlos siempre a la mano.</p>
+                </div>
+            </th:block>
+        </div>
+    </div>
+    </div>
+
+</body>
+</html>

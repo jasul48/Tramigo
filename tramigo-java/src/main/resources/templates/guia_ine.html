@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Fácil: Sacar tu INE - Tramigo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --primary-gradient: linear-gradient(135deg, #0066cc 0%, #004a99 100%);
+            --hero-bg-gradient: linear-gradient(135deg, #f0f7ff 0%, #dbeafe 100%);
+            --text-dark: #0b2246;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --bg-light: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.7);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+            overflow-x: hidden;
+        }
+
+        /* --- PROGRESS BAR --- */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: #eee;
+            z-index: 1000;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-blue);
+            width: 0%;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 10px rgba(0, 102, 204, 0.5);
+        }
+
+        /* NAVEGACIÓN */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 6px;
+            z-index: 100;
+        }
+        .logo { display: flex; flex-direction: column; align-items: flex-start; text-decoration: none; }
+        .logo-title { color: #0b2246; font-size: 32px; font-weight: 800; font-style: italic; margin: 0; letter-spacing: -1px; }
+        .logo-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { text-decoration: none; color: #444; font-weight: 700; font-size: 1.1rem; }
+        .nav-links a:hover { color: var(--primary-blue); }
+
+        .nav-right { display: flex; align-items: center; gap: 2rem; }
+        .user-profile {
+            display: flex; align-items: center; justify-content: center;
+            width: 40px; height: 40px; border-radius: 50%;
+            background-color: #f1f5f9;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+        }
+        .user-profile:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.2);
+        }
+        .user-profile img { width: 24px; height: 24px; }
+
+        /* HEADER DE PÁGINA */
+        .page-header {
+            background: var(--hero-bg-gradient);
+            padding: 5rem 5%;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 700;
+            background: rgba(0, 102, 204, 0.08);
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+        }
+        .back-link:hover {
+            background: rgba(0, 102, 204, 0.15);
+            transform: translateX(-5px);
+        }
+
+        /* CONTENEDOR DE PASOS */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 5%;
+        }
+
+        .step-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 3rem 3rem 3rem 5rem;
+            margin-bottom: 4rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.03);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .step-card.visible { opacity: 1; transform: translateY(0); }
+        .step-card:hover { transform: scale(1.01); box-shadow: 0 20px 50px rgba(0,0,0,0.06); }
+        .step-card.completed { border-left: 10px solid #10b981; }
+
+        .step-number {
+            position: absolute;
+            left: -25px;
+            top: -25px;
+            width: 80px;
+            height: 80px;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
+            border: 6px solid var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .step-card.completed .step-number { background: #10b981; }
+
+        .step-checkbox {
+            position: absolute;
+            right: 2rem;
+            top: 2rem;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            accent-color: #10b981;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+        }
+
+        .step-card h2 {
+            font-size: 2.2rem;
+            color: #0b2246;
+            margin: 0;
+            font-weight: 800;
+        }
+
+        .step-card p {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .step-card strong {
+            color: #000;
+            background-color: #fff3cd;
+            padding: 0 5px;
+            border-radius: 3px;
+        }
+
+        .important-box {
+            background-color: #f0f7ff;
+            border-left: 6px solid var(--primary-blue);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .important-box p {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        ul.big-list {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+        }
+
+        ul.big-list li {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            padding-left: 2.5rem;
+            position: relative;
+        }
+
+        ul.big-list li::before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+            top: 2px;
+            font-size: 1.5rem;
+        }
+
+        .call-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background-color: #10b981;
+            color: white !important;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            text-decoration: none;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-top: 1rem;
+            box-shadow: 0 5px 15px rgba(16,185,129,0.3);
+            border: none;
+            transition: transform 0.3s ease;
+        }
+        .call-btn:hover { transform: translateY(-3px); }
+
+        .float-print {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .float-print:hover { transform: scale(1.1); background: var(--primary-blue); color: white; }
+
+        @media print {
+            .navbar, .progress-container, .float-print, .back-link, .step-checkbox, .call-btn { display: none !important; }
+            body { background: white; }
+            .container { padding: 0; }
+            .step-card { box-shadow: none; border: 1px solid #ddd; margin-bottom: 2rem; opacity: 1 !important; transform: none !important; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .step-card { padding: 2rem 1.5rem 1.5rem 1.5rem; margin-top: 2rem; }
+            .step-number { left: 50%; transform: translateX(-50%); top: -40px; }
+            .step-header { flex-direction: column; text-align: center; margin-top: 2rem; }
+            .step-card h2 { font-size: 1.8rem; }
+            .call-btn { font-size: 1.3rem; padding: 1rem; width: 100%; justify-content: center; box-sizing: border-box; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <header class="navbar">
+        <a href="/index" class="logo">
+            <span class="logo-title">Tramigo</span>
+            <div class="logo-subtitle">Trámites & Gestión Administrativa</div>
+        </a>
+        <div class="nav-right">
+            <nav class="nav-links">
+                <a href="/index">Volver al Inicio</a>
+            </nav>
+            <th:block th:if="${session.usuario_id != null}">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <a href="/mis_documentos" style="text-decoration: none; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 5px; transition: color 0.3s;" onmouseover="this.style.color='var(--primary-blue)'" onmouseout="this.style.color='var(--text-dark)'">
+                    <img src="/static/img/icons/folder_docs.png" alt="Docs">
+                    Mis Documentos
+                </a>
+                <a href="/perfil" style="text-decoration: none; display: flex; align-items: center; gap: 8px; transition: opacity 0.3s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                    <span style="font-weight: 700; font-size: 1rem; color: var(--text-dark);">Hola, <span th:text="${session.nombre}">Usuario</span></span>
+                </a>
+                <a href="/logout" style="color: #ef4444; font-weight: 700; text-decoration: none; font-size: 0.85rem; padding: 6px 12px; background: #fee2e2; border-radius: 30px; transition: all 0.3s;">Salir</a>
+            </div>
+            </th:block><th:block th:unless="${session.usuario_id != null}">
+            <a href="/login" class="user-profile" title="Iniciar Sesión">
+                <img src="/static/img/icons/user_circle.png" alt="Usuario">
+            </a>
+            </th:block>
+        </div>
+    </header>
+
+    <section class="page-header">
+        <a href="/categorias" class="back-link">← Regresar a todos los trámites</a>
+        <h1>Guía Completa: Cómo sacar tu INE</h1>
+        <p>Sigue estos 4 sencillos pasos. <strong>El trámite es totalmente gratuito.</strong> Explicado fácil, sin palabras complicadas y con letra grande.</p>
+    </section>
+
+    <div class="container">
+        
+        <!-- PASO 1 -->
+        <div class="step-card" id="step1">
+            <input type="checkbox" class="step-checkbox" onchange="toggleStep(1)">
+            <div class="step-number" onclick="toggleStep(1)">1</div>
+            <div class="step-header">
+                <img src="/static/img/icons/folder-invoices--v1.png" alt="Documentos" class="step-icon">
+                <h2>Junta tus papeles</h2>
+            </div>
+            <p>Antes de salir de casa o llamar, debes juntar 3 documentos. <strong>Ojo: Tienen que ser originales</strong> (no se valen copias borrosas):</p>
+            
+            <ul class="big-list">
+                <li><strong>Tu Acta de Nacimiento.</strong></li>
+                <li><strong>Un comprobante de tu domicilio</strong> (un recibo de luz, agua o teléfono que no tenga más de 3 meses de viejo).</li>
+                <li><strong>Una identificación con foto</strong> (como tu pasaporte, credencial de la escuela, o tu credencial de INAPAM).</li>
+            </ul>
+
+            <div class="important-box">
+                <p>¿No tienes una identificación con foto? No te preocupes. Puedes llevar a <strong>dos testigos</strong> (dos personas familiares o amigos que sí tengan su INE y te acompañen ese día).</p>
+            </div>
+        </div>
+
+        <!-- PASO 2 -->
+        <div class="step-card" id="step2">
+            <input type="checkbox" class="step-checkbox" onchange="toggleStep(2)">
+            <div class="step-number" onclick="toggleStep(2)">2</div>
+            <div class="step-header">
+                <img src="/static/img/icons/phone.png" alt="Teléfono" class="step-icon">
+                <h2>Saca una cita</h2>
+            </div>
+            <p>Para que no te tengan esperando en la fila todo el día, lo mejor es hacer una cita.</p>
+            
+            <div style="background: rgba(16, 185, 129, 0.05); padding: 1.5rem; border-radius: 1rem; margin-bottom: 2rem; border-left: 5px solid #10b981;">
+                <p style="margin-top: 0;"><strong>Opción 1: Por teléfono (La más sencilla)</strong><br>
+                La llamada es gratuita y te ayudarán a elegir el día.</p>
+                <a href="tel:8004332000" class="call-btn" style="margin-top: 0.5rem;">
+                    📞 Llama al 800 433 2000
+                </a>
+            </div>
+
+            <div style="background: rgba(0, 102, 204, 0.05); padding: 1.5rem; border-radius: 1rem; border-left: 5px solid var(--primary-blue);">
+                <p style="margin-top: 0;"><strong>Opción 2: Por Internet</strong><br>
+                Si prefieres hacerlo desde tu computadora o celular, sigue estos pasos rápidos:</p>
+                <ol style="font-size: 1.2rem; line-height: 1.6; color: #333; margin-bottom: 1.5rem; padding-left: 1.5rem;">
+                    <li>Entra a la página <strong>www.ine.mx</strong>.</li>
+                    <li>Busca y dale clic al botón que dice <strong>"Haz tu cita"</strong>.</li>
+                    <li>Llena el formulario con tu estado, tu municipio y elige la oficina más cercana.</li>
+                    <li>Escoge en el calendario el día y la hora que mejor te queden.</li>
+                    <li>Escribe tus datos (nombre y teléfono) y dale a <strong>"Confirmar Cita"</strong>.</li>
+                </ol>
+                <a href="https://www.ine.mx" target="_blank" class="call-btn" style="background-color: var(--primary-blue); font-size: 1.4rem; padding: 0.8rem 1.5rem;">
+                    🌐 Ir a la página del INE
+                </a>
+            </div>
+        </div>
+
+        <!-- PASO 3 -->
+        <div class="step-card" id="step3">
+            <input type="checkbox" class="step-checkbox" onchange="toggleStep(3)">
+            <div class="step-number" onclick="toggleStep(3)">3</div>
+            <div class="step-header">
+                <img src="/static/img/icons/company.png" alt="Oficina" class="step-icon">
+                <h2>Ve a la oficina del INE</h2>
+            </div>
+            <p>El día que te dieron por teléfono, ve a la oficina (le llaman "módulo").</p>
+            <ul class="big-list">
+                <li>Llega 10 minutos antes de tu hora.</li>
+                <li>Lleva los 3 documentos originales que juntaste en el Paso 1.</li>
+                <li>Ahí te tomarán una fotografía, te pedirán que pongas tus huellas de los dedos en una maquinita, y firmarás en una pantalla.</li>
+            </ul>
+
+            <div style="background: rgba(239, 68, 68, 0.05); padding: 1.5rem; border-radius: 1rem; margin-top: 1.5rem; border-left: 5px solid #ef4444;">
+                <p style="margin-top: 0;"><strong>📍 ¿No sabes dónde está tu oficina?</strong><br>
+                Usa el mapa oficial para encontrar el módulo más cercano a tu casa seleccionando tu estado y dirección.</p>
+                <a href="https://ubicatumodulo.ine.mx/" target="_blank" class="call-btn" style="background-color: #ef4444; font-size: 1.4rem;">
+                    🗺️ Ubica tu Módulo INE
+                </a>
+            </div>
+
+            <div class="important-box">
+                <p>Al terminar, la persona que te atendió te dará un comprobante (un papelito). <strong>¡Guárdalo muy bien!</strong> Lo vas a necesitar para recoger tu credencial.</p>
+            </div>
+        </div>
+
+        <!-- PASO 4 -->
+        <div class="step-card" id="step4">
+            <input type="checkbox" class="step-checkbox" onchange="toggleStep(4)">
+            <div class="step-number" onclick="toggleStep(4)">4</div>
+            <div class="step-header">
+                <img src="/static/img/icons/ine.png" alt="Credencial INE" class="step-icon">
+                <h2>Recoge tu credencial nueva</h2>
+            </div>
+            <p>En el papelito que te dieron dice a partir de qué día puedes ir a recoger tu credencial.</p>
+            <p>Ese día o los días siguientes, solo tienes que regresar a la misma oficina, entregar el papelito, poner tu huella para que comprueben que eres tú, y listo. <strong>¡Te entregarán tu nueva INE!</strong></p>
+            
+            <div class="important-box" style="background-color: rgba(239, 68, 68, 0.05); border-left-color: #ef4444;">
+                <p><strong>💡 Dato importante:</strong> Tu credencial dura <strong>10 años</strong>. Después de ese tiempo, tendrás que renovarla siguiendo estos mismos pasos.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="float-print" onclick="window.print()" title="Imprimir Guía">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+    </div>
+
+    <script>
+        const totalSteps = 4;
+
+        function toggleStep(n) {
+            const card = document.getElementById('step' + n);
+            const checkbox = card.querySelector('.step-checkbox');
+            
+            if (card.classList.contains('completed')) {
+                card.classList.remove('completed');
+                checkbox.checked = false;
+                localStorage.removeItem('ine_step_' + n);
+            } else {
+                card.classList.add('completed');
+                checkbox.checked = true;
+                localStorage.setItem('ine_step_' + n, 'true');
+            }
+            updateProgress();
+        }
+
+        function updateProgress() {
+            let completed = 0;
+            for (let i = 1; i <= totalSteps; i++) {
+                if (localStorage.getItem('ine_step_' + i)) completed++;
+            }
+            const percent = (completed / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            for (let i = 1; i <= totalSteps; i++) {
+                if (localStorage.getItem('ine_step_' + i)) {
+                    const card = document.getElementById('step' + i);
+                    card.classList.add('completed');
+                    card.querySelector('.step-checkbox').checked = true;
+                }
+            }
+            updateProgress();
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.step-card').forEach(card => observer.observe(card));
+        });
+    </script>
+</body>
+</html>

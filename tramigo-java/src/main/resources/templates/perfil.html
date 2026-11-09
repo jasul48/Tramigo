@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Tramigo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --primary-gradient: linear-gradient(135deg, #0066cc 0%, #004a99 100%);
+            --hero-bg-gradient: linear-gradient(135deg, #f0f7ff 0%, #dbeafe 100%);
+            --text-dark: #0b2246;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --bg-light: #f8fafc;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background: var(--hero-bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAVEGACIÓN */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { display: flex; flex-direction: column; align-items: flex-start; text-decoration: none; }
+        .logo-title { color: #0b2246; font-size: 32px; font-weight: 800; font-style: italic; margin: 0; letter-spacing: -1px; }
+        .logo-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        
+        .nav-right { display: flex; align-items: center; gap: 2rem; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: #444; font-weight: 700; font-size: 1.1rem; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--primary-blue); }
+
+        .container {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        .profile-card {
+            background: var(--white);
+            border-radius: 2rem;
+            box-shadow: 0 20px 50px rgba(0, 102, 204, 0.08);
+            padding: 3rem;
+            border: 1px solid rgba(0, 102, 204, 0.05);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 2rem;
+        }
+
+        .profile-pic-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+        }
+
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--white);
+            box-shadow: 0 10px 25px rgba(0, 102, 204, 0.15);
+        }
+
+        .upload-label {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: var(--primary-gradient);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+        .upload-label:hover { transform: scale(1.1); }
+        .upload-label img { width: 20px; height: 20px; filter: invert(1); }
+        #foto_perfil { display: none; }
+
+        .profile-info h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 800;
+        }
+        .profile-info p {
+            color: var(--text-muted);
+            margin: 5px 0 0 0;
+            font-size: 1.1rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width { grid-column: 1 / -1; }
+
+        label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-dark);
+        }
+
+        input {
+            padding: 0.8rem 1.2rem;
+            border-radius: 0.8rem;
+            border: 1.5px solid #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+            background: var(--white);
+        }
+        input:disabled {
+            background: #f1f5f9;
+            cursor: not-allowed;
+            color: #94a3b8;
+        }
+
+        .btn-save {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.8rem;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.2);
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
+        }
+
+        /* Flash messages */
+        .flash-messages {
+            margin-bottom: 2rem;
+        }
+        .flash-message {
+            padding: 1rem;
+            border-radius: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .flash-success { background: #dcfce7; color: #166534; border-left: 5px solid #22c55e; }
+        .flash-error { background: #fee2e2; color: #991b1b; border-left: 5px solid #ef4444; }
+
+        @media (max-width: 600px) {
+            .profile-header { flex-direction: column; text-align: center; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="/index" class="logo">
+            <span class="logo-title">Tramigo</span>
+            <div class="logo-subtitle">Trámites & Gestión Administrativa</div>
+        </a>
+        <div class="nav-right">
+            <nav class="nav-links">
+                <a href="/index">Inicio</a>
+                <a href="/mis_documentos">Mis Documentos</a>
+            </nav>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="/logout" style="color: #ef4444; font-weight: 700; text-decoration: none; font-size: 0.9rem; padding: 8px 16px; background: #fee2e2; border-radius: 30px; transition: all 0.3s;" onmouseover="this.style.background='#fecaca'" onmouseout="this.style.background='#fee2e2'">Cerrar Sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="flash-container" th:if="${successMessage != null or errorMessage != null}">
+            <div class="flash-alert flash-success" th:if="${successMessage != null}" th:text="${successMessage}"></div>
+            <div class="flash-alert flash-error" th:if="${errorMessage != null}" th:text="${errorMessage}"></div>
+        </div>
+
+        <div class="profile-card">
+            <form action="/perfil" method="POST" enctype="multipart/form-data">
+                <div class="profile-header">
+                    <div class="profile-pic-container">
+                        <img th:if="${usuario != null and usuario.fotoPerfil != null and usuario.fotoPerfil != 'default_profile.png' and !usuario.fotoPerfil.isEmpty()}" 
+                             th:src="@{'/uploads/perfiles/' + ${usuario.fotoPerfil}}" 
+                             alt="Foto de perfil" class="profile-pic" id="preview" src="/static/img/icons/user_circle.png">
+                        <img th:unless="${usuario != null and usuario.fotoPerfil != null and usuario.fotoPerfil != 'default_profile.png' and !usuario.fotoPerfil.isEmpty()}" 
+                             th:src="${usuario != null ? 'https://ui-avatars.com/api/?name=' + usuario.nombre + '+' + usuario.apellido + '&background=0066cc&color=fff&size=150' : '/static/img/icons/user_circle.png'}" 
+                             alt="Foto de perfil" class="profile-pic" id="preview">
+                        <label for="foto_perfil" class="upload-label" title="Cambiar foto">
+                            <img src="/static/img/icons/camera.png" alt="Cámara">
+                        </label>
+                        <input type="file" id="foto_perfil" name="foto_perfil" accept="image/*" onchange="previewImage(this)">
+                    </div>
+                    <div class="profile-info">
+                        <h1><span th:text="${usuario != null ? usuario.nombre : ''}">Nombre</span> <span th:text="${usuario != null ? usuario.apellido : ''}">Apellido</span></h1>
+                        <p th:text="${usuario != null ? usuario.correo : ''}">correo@ejemplo.com</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" name="nombre" th:value="${usuario != null ? usuario.nombre : ''}" value= required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido">Apellido</label>
+                        <input type="text" id="apellido" name="apellido" th:value="${usuario != null ? usuario.apellido : ''}" value= required>
+                    </div>
+                    <div class="form-group">
+                        <label for="correo_display">Correo Electrónico</label>
+                        <input type="email" id="correo_display" th:value="${usuario != null ? usuario.correo : ''}" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono" th:value="${usuario != null ? usuario.telefono : ''}" placeholder="55 1234 5678">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Fecha de Registro</label>
+                        <input type="text" th:value="${usuario != null and usuario.fechaRegistro != null ? #temporals.format(usuario.fechaRegistro, 'dd/MM/yyyy HH:mm') : ''}" disabled>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-save">Guardar Cambios</button>
+            </form>
+
+            <div style="margin-top: 3rem; padding-top: 2rem; border-top: 2px dashed #e2e8f0;">
+                <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Cambiar Contraseña</h2>
+                <form action="/cambiar_password" method="POST">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="old_password">Contraseña Actual</label>
+                            <input type="password" id="old_password" name="old_password" required>
+                        </div>
+                        <div class="form-group"></div> <!-- Espacio vacío para la rejilla -->
+                        
+                        <div class="form-group">
+                            <label for="new_password">Nueva Contraseña</label>
+                            <input type="password" id="new_password" name="new_password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirmar Nueva Contraseña</label>
+                            <input type="password" id="confirm_password" name="confirm_password" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-save" style="background: #0b2246;">Actualizar Contraseña</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>

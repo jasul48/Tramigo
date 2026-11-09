@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Cartilla del Servicio Militar Nacional - Tramigo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #1b4332; /* Verde militar/oscuro */
+            --primary-gradient: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
+            --hero-bg-gradient: linear-gradient(135deg, #f0fff4 0%, #dcfce7 100%);
+            --text-dark: #0b2246;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --bg-light: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.7);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+            overflow-x: hidden;
+        }
+
+        /* --- PROGRESS BAR --- */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: #eee;
+            z-index: 1000;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-blue);
+            width: 0%;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 10px rgba(27, 67, 50, 0.5);
+        }
+
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 5%; background: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky; top: 6px; z-index: 100;
+        }
+        .logo { display: flex; flex-direction: column; align-items: flex-start; text-decoration: none; }
+        .logo-title { color: #0b2246; font-size: 32px; font-weight: 800; font-style: italic; margin: 0; letter-spacing: -1px; }
+        .logo-subtitle { font-size: 11px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin-top: 2px; }
+
+        .page-header {
+            background: var(--hero-bg-gradient);
+            padding: 5rem 5%;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 700;
+            background: rgba(27, 67, 50, 0.08);
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+        }
+        .back-link:hover { transform: translateX(-5px); background: rgba(27, 67, 50, 0.15); }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 3rem 5%; }
+        
+        .step-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 3rem 3rem 3rem 5rem;
+            margin-bottom: 4rem;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .step-card.visible { opacity: 1; transform: translateY(0); }
+        .step-card:hover { transform: scale(1.01); box-shadow: 0 20px 50px rgba(0,0,0,0.06); }
+        .step-card.completed { border-left: 10px solid #10b981; }
+
+        .step-number {
+            position: absolute;
+            left: -25px;
+            top: -25px;
+            width: 80px;
+            height: 80px;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            box-shadow: 0 8px 20px rgba(27, 67, 50, 0.3);
+            border: 6px solid var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .step-card.completed .step-number { background: #10b981; }
+
+        .step-checkbox {
+            position: absolute;
+            right: 2rem;
+            top: 2rem;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            accent-color: #10b981;
+        }
+
+        .step-header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; }
+        .step-icon { width: 80px; height: 80px; }
+        .step-card h2 { font-size: 2.2rem; color: #1b4332; margin: 0; font-weight: 800; }
+        .step-card p { font-size: 1.3rem; line-height: 1.7; color: #333; }
+
+        .important-box { background-color: rgba(27, 67, 50, 0.05); border-left: 6px solid var(--primary-blue); padding: 1.5rem; border-radius: 0.5rem; margin-top: 1.5rem; }
+
+        .float-print {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .float-print:hover { transform: scale(1.1); background: var(--primary-blue); color: white; }
+
+        @media print {
+            .navbar, .progress-container, .float-print, .back-link, .step-checkbox { display: none !important; }
+            body { background: white; }
+            .container { padding: 0; }
+            .step-card { box-shadow: none; border: 1px solid #ddd; margin-bottom: 2rem; opacity: 1 !important; transform: none !important; }
+        }
+
+        @media (max-width: 768px) {
+            .step-card { padding: 2rem 1.5rem 1.5rem 1.5rem; margin-top: 2rem; }
+            .step-number { left: 50%; transform: translateX(-50%); top: -40px; }
+            .step-header { flex-direction: column; text-align: center; margin-top: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <header class="navbar">
+        <a href="/index" class="logo">
+            <span class="logo-title">Tramigo</span>
+            <div class="logo-subtitle">Trámites & Gestión Administrativa</div>
+        </a>
+    </header>
+
+    <section class="page-header">
+        <a href="/categorias" class="back-link">← Volver</a>
+        <h1>Guía: Cartilla Militar (Precartilla)</h1>
+        <p>Proceso para jóvenes de clase y remisos. Cumple con tu deber ciudadano.</p>
+    </section>
+
+    <div class="container">
+        <div class="step-card" id="step1">
+            <input type="checkbox" class="step-checkbox" onchange="toggleStep(1)">
+            <div class="step-number" onclick="toggleStep(1)">1</div>
+            <div class="step-header">
+                <img src="/static/img/icons/camara.png" alt="Fotos" class="step-icon">
+                <h2>Tómate las fotos</h2>
+            </div>
+            <p>Este es el requisito más estricto. Necesitas 4 fotografías recientes (no instantáneas):</p>
+            <ul>
+                <li>De frente, a color o blanco y negro (35 x 45 mm).</li>
+                <li>Fondo blanco, sin retoque.</li>
+                <li><strong>Corte de pelo "casquete corto"</strong>, sin barba, sin patillas, sin lentes y sin piercings.</li>
+            </ul>
+        </div>
+
+        <div class="step-card" id="step2">
+            <input type="checkbox" class="step-checkbox" onchange="toggleStep(2)">
+            <div class="step-number" onclick="toggleStep(2)">2</div>
+            <div class="step-header">
+                <img src="/static/img/icons/direccion.png" alt="Documentos" class="step-icon">
+                <h2>Documentación necesaria</h2>
+            </div>
+            <p>Prepara originales y copias de:</p>
+            <ul>
+                <li>Acta de Nacimiento.</li>
+                <li>Comprobante de domicilio.</li>
+                <li>Comprobante de estudios (último grado).</li>
+                <li>CURP.</li>
+            </ul>
+        </div>
+
+        <div class="step-card" id="step3">
+            <input type="checkbox" class="step-checkbox" onchange="toggleStep(3)">
+            <div class="step-number" onclick="toggleStep(3)">3</div>
+            <div class="step-header">
+                <img src="/static/img/icons/palacio.png" alt="Junta" class="step-icon">
+                <h2>Acude a la Junta de Reclutamiento</h2>
+            </div>
+            <p>Debes ir a la Junta Municipal o Alcaldía que te corresponda. El periodo de inscripción es del <strong>2 de enero al 15 de octubre</strong> de cada año.</p>
+        </div>
+
+        <div class="step-card" id="step4">
+            <input type="checkbox" class="step-checkbox" onchange="toggleStep(4)">
+            <div class="step-number" onclick="toggleStep(4)">4</div>
+            <div class="step-header">
+                <img src="/static/img/icons/suerte.png" alt="Sorteo" class="step-icon">
+                <h2>El Sorteo (Bola Blanca o Negra)</h2>
+            </div>
+            <p>En noviembre se realiza el sorteo:</p>
+            <ul>
+                <li><strong>Bola Blanca o Azul:</strong> Te toca marchar (hacer el servicio los sábados).</li>
+                <li><strong>Bola Negra:</strong> No te toca marchar, quedas "a disponibilidad".</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="float-print" onclick="window.print()" title="Imprimir Guía">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+    </div>
+
+    <script>
+        const totalSteps = 4;
+
+        function toggleStep(n) {
+            const card = document.getElementById('step' + n);
+            const checkbox = card.querySelector('.step-checkbox');
+            
+            if (card.classList.contains('completed')) {
+                card.classList.remove('completed');
+                checkbox.checked = false;
+                localStorage.removeItem('militar_step_' + n);
+            } else {
+                card.classList.add('completed');
+                checkbox.checked = true;
+                localStorage.setItem('militar_step_' + n, 'true');
+            }
+            updateProgress();
+        }
+
+        function updateProgress() {
+            let completed = 0;
+            for (let i = 1; i <= totalSteps; i++) {
+                if (localStorage.getItem('militar_step_' + i)) completed++;
+            }
+            const percent = (completed / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            for (let i = 1; i <= totalSteps; i++) {
+                if (localStorage.getItem('militar_step_' + i)) {
+                    const card = document.getElementById('step' + i);
+                    card.classList.add('completed');
+                    card.querySelector('.step-checkbox').checked = true;
+                }
+            }
+            updateProgress();
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.step-card').forEach(card => observer.observe(card));
+        });
+    </script>
+</body>
+</html>

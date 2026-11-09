@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Fácil: Pasaporte Mexicano - Tramigo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --primary-gradient: linear-gradient(135deg, #0066cc 0%, #004a99 100%);
+            --hero-bg-gradient: linear-gradient(135deg, #f0f7ff 0%, #dbeafe 100%);
+            --text-dark: #0b2246;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --bg-light: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.7);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+            overflow-x: hidden;
+        }
+
+        /* --- PROGRESS BAR --- */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: #eee;
+            z-index: 1000;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-blue);
+            width: 0%;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 10px rgba(0, 102, 204, 0.5);
+        }
+
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 5%; background: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky; top: 6px; z-index: 100;
+        }
+        .logo { display: flex; flex-direction: column; align-items: flex-start; text-decoration: none; }
+        .logo-title { color: #0b2246; font-size: 32px; font-weight: 800; font-style: italic; margin: 0; letter-spacing: -1px; }
+        .logo-subtitle { font-size: 11px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin-top: 2px; }
+
+        .page-header {
+            background: var(--hero-bg-gradient);
+            padding: 5rem 5%;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 700;
+            background: rgba(0, 102, 204, 0.08);
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+        }
+        .back-link:hover { transform: translateX(-5px); background: rgba(0, 102, 204, 0.15); }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 3rem 5%; }
+        
+        .step-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 3rem 3rem 3rem 5rem;
+            margin-bottom: 4rem;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        .step-card.visible { opacity: 1; transform: translateY(0); }
+        .step-card:hover { transform: scale(1.01); box-shadow: 0 20px 50px rgba(0,0,0,0.06); }
+        .step-card.completed { border-left: 10px solid #10b981; }
+
+        .step-number {
+            position: absolute;
+            left: -25px;
+            top: -25px;
+            width: 80px;
+            height: 80px;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
+            border: 6px solid var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .step-card.completed .step-number { background: #10b981; }
+
+        .step-checkbox {
+            position: absolute;
+            right: 2rem;
+            top: 2rem;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            accent-color: #10b981;
+        }
+
+        .step-header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; }
+        .step-icon { width: 80px; height: 80px; }
+        .step-card h2 { font-size: 2.2rem; color: #0b2246; margin: 0; font-weight: 800; }
+        .step-card p { font-size: 1.3rem; line-height: 1.7; color: #333; }
+        .step-card strong { background-color: #fff3cd; padding: 0 5px; border-radius: 3px; }
+
+        .btn-call {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: #10b981;
+            color: white !important;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-top: 1rem;
+            box-shadow: 0 5px 15px rgba(16,185,129,0.3);
+            transition: transform 0.3s ease;
+        }
+        .btn-call:hover { transform: translateY(-3px); }
+
+        .important-box { background-color: rgba(0, 102, 204, 0.05); border-left: 6px solid var(--primary-blue); padding: 1.5rem; border-radius: 0.5rem; margin-top: 1.5rem; }
+
+        .float-print {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .float-print:hover { transform: scale(1.1); background: var(--primary-blue); color: white; }
+
+        @media print {
+            .navbar, .progress-container, .float-print, .back-link, .step-checkbox, .btn-call { display: none !important; }
+            body { background: white; }
+            .container { padding: 0; }
+            .step-card { box-shadow: none; border: 1px solid #ddd; margin-bottom: 2rem; opacity: 1 !important; transform: none !important; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .step-card { padding: 2rem 1.5rem 1.5rem 1.5rem; margin-top: 2rem; }
+            .step-number { left: 50%; transform: translateX(-50%); top: -40px; }
+            .step-header { flex-direction: column; text-align: center; margin-top: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <header class="navbar">
+        <a href="/index" class="logo">
+            <span class="logo-title">Tramigo</span>
+            <div class="logo-subtitle">Trámites & Gestión Administrativa</div>
+        </a>
+    </header>
+
+    <section class="page-header">
+        <a href="/categorias" class="back-link">← Volver</a>
+        <h1>Guía: Pasaporte Mexicano</h1>
+        <p>Prepara tus maletas. Te explicamos cómo sacar tu pasaporte por primera vez o renovarlo.</p>
+    </section>
+
+    <div class="container">
+        <div class="step-card" id="step1">
+            <input type="checkbox" class="step-checkbox" onchange="toggleStep(1)">
+            <div class="step-number" onclick="toggleStep(1)">1</div>
+            <div class="step-header">
+                <img src="/static/img/icons/curp.png" alt="Papeles" class="step-icon">
+                <h2>Reúne tus papeles</h2>
+            </div>
+            <p>Necesitas tener a la mano: <strong>Acta de Nacimiento original</strong>, tu <strong>INE original</strong> y tu <strong>CURP</strong> impresa.</p>
+        </div>
+
+        <div class="step-card" id="step2">
+            <input type="checkbox" class="step-checkbox" onchange="toggleStep(2)">
+            <div class="step-number" onclick="toggleStep(2)">2</div>
+            <div class="step-header">
+                <img src="/static/img/icons/phone.png" alt="Cita" class="step-icon">
+                <h2>Agenda tu cita</h2>
+            </div>
+            <p>Puedes agendarla por teléfono o directamente en el portal oficial de la SRE.</p>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+                <a href="tel:5589324827" class="btn-call">📞 Llama al 55 8932 4827</a>
+                <a href="https://citas.sre.gob.mx/" target="_blank" class="btn-call" style="background-color: var(--primary-blue);">🌐 Cita por Internet</a>
+            </div>
+            <p style="font-size: 1rem; margin-top: 10px; color: var(--text-muted);">(El horario telefónico es de lunes a domingo de 8:00 a 20:00 hrs)</p>
+        </div>
+
+        <div class="step-card" id="step3">
+            <input type="checkbox" class="step-checkbox" onchange="toggleStep(3)">
+            <div class="step-number" onclick="toggleStep(3)">3</div>
+            <div class="step-header">
+                <img src="/static/img/icons/bank.png" alt="Pago" class="step-icon">
+                <h2>Paga en el banco</h2>
+            </div>
+            <p>Antes de ir a tu cita, tienes que ir a un banco a pagar. El costo depende de cuántos años quieras que dure tu pasaporte (3, 6 o 10 años).</p>
+            
+            <div class="important-box" style="background-color: rgba(234, 179, 8, 0.05); border-left: 6px solid #eab308; margin-top: 1.5rem;">
+                <p><strong>🎁 ¡Descuento del 50%!</strong> Si tienes <strong>60 años o más</strong> o tienes alguna discapacidad, solo pagas la mitad del costo total.</p>
+            </div>
+        </div>
+
+        <div class="step-card" id="step4">
+            <input type="checkbox" class="step-checkbox" onchange="toggleStep(4)">
+            <div class="step-number" onclick="toggleStep(4)">4</div>
+            <div class="step-header">
+                <img src="/static/img/icons/company.png" alt="Oficina" class="step-icon">
+                <h2>Acude a tu cita</h2>
+            </div>
+            <p>Ve a la oficina de la SRE que elegiste. Lleva tus documentos originales y tu comprobante de pago. ¡Ese mismo día suelen entregarte tu pasaporte!</p>
+            
+            <div class="important-box" style="background-color: rgba(0, 102, 204, 0.05); border-left: 6px solid var(--primary-blue); margin-top: 1.5rem;">
+                <p><strong>📸 No lleves fotos:</strong> Ahí mismo te toman la foto, te escanean los ojos y te piden tus huellas. ¡No hace falta llevar fotos de la farmacia!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="float-print" onclick="window.print()" title="Imprimir Guía">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+    </div>
+
+    <script>
+        const totalSteps = 4;
+
+        function toggleStep(n) {
+            const card = document.getElementById('step' + n);
+            const checkbox = card.querySelector('.step-checkbox');
+            
+            if (card.classList.contains('completed')) {
+                card.classList.remove('completed');
+                checkbox.checked = false;
+                localStorage.removeItem('pasaporte_step_' + n);
+            } else {
+                card.classList.add('completed');
+                checkbox.checked = true;
+                localStorage.setItem('pasaporte_step_' + n, 'true');
+            }
+            updateProgress();
+        }
+
+        function updateProgress() {
+            let completed = 0;
+            for (let i = 1; i <= totalSteps; i++) {
+                if (localStorage.getItem('pasaporte_step_' + i)) completed++;
+            }
+            const percent = (completed / totalSteps) * 100;
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            for (let i = 1; i <= totalSteps; i++) {
+                if (localStorage.getItem('pasaporte_step_' + i)) {
+                    const card = document.getElementById('step' + i);
+                    card.classList.add('completed');
+                    card.querySelector('.step-checkbox').checked = true;
+                }
+            }
+            updateProgress();
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.step-card').forEach(card => observer.observe(card));
+        });
+    </script>
+</body>
+</html>

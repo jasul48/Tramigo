@@ -1,0 +1,150 @@
+name: tramigo
+
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:?Crea .env a partir de .env.example y define DB_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-p${DB_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  eureka-server:
+    build: ./eureka-server
+    restart: unless-stopped
+    ports:
+      - "8761:8761"
+
+  usuarios-service:
+    build: ./usuarios-service
+    restart: unless-stopped
+    environment: &spring_env
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: ${DB_USERNAME:-root}
+      DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en .env}
+      EUREKA_URL: http://eureka-server:8761/eureka/
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    volumes:
+      - usuarios_uploads:/app/uploads
+
+  documentos-service:
+    build: ./documentos-service
+    restart: unless-stopped
+    environment: *spring_env
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    volumes:
+      - documentos_uploads:/app/uploads
+
+  soporte-service:
+    build: ./soporte-service
+    restart: unless-stopped
+    environment: *spring_env
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+
+  notificaciones-service:
+    build: ./notificaciones-service
+    restart: unless-stopped
+    environment:
+      <<: *spring_env
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      SOPORTE_EMAIL: ${SOPORTE_EMAIL:-}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+
+  tramites-service:
+    build: ./tramites-service
+    restart: unless-stopped
+    environment: *spring_env
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+
+  seguimiento-service:
+    build: ./seguimiento-service
+    restart: unless-stopped
+    environment: *spring_env
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+
+  api-gateway:
+    build: ./api-gateway
+    restart: unless-stopped
+    environment:
+      EUREKA_URL: http://eureka-server:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_started
+      usuarios-service:
+        condition: service_started
+      documentos-service:
+        condition: service_started
+      soporte-service:
+        condition: service_started
+      notificaciones-service:
+        condition: service_started
+      tramites-service:
+        condition: service_started
+      seguimiento-service:
+        condition: service_started
+    ports:
+      - "8090:8090"
+
+  # Opcional: la web monolítica usa tablas antiguas en logintramigo.
+  # Actívala solo después de restaurar/importar la base de datos original.
+  tramigo-web:
+    profiles: ["web"]
+    build: ./tramigo-java
+    restart: unless-stopped
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USERNAME: ${DB_USERNAME:-root}
+      DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en .env}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      TRAMIGO_API_URL: http://api-gateway:8090
+    depends_on:
+      mysql:
+        condition: service_healthy
+      api-gateway:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    volumes:
+      - tramigo_web_uploads:/app/uploads
+
+volumes:
+  mysql_data:
+  usuarios_uploads:
+  documentos_uploads:
+  tramigo_web_uploads:

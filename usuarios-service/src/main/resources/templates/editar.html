@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Persona | Sistema Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --primary-gradient: linear-gradient(135deg, #0066cc 0%, #004a99 100%);
+            --hero-bg-gradient: linear-gradient(135deg, #f0f7ff 0%, #dbeafe 100%);
+            --text-dark: #0b2246;
+            --text-muted: #475569;
+            --white: #ffffff;
+            --bg-light: #f8fafc;
+            --accent: #0066cc;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--hero-bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glass-panel {
+            background: var(--white);
+            border: 1px solid rgba(0, 102, 204, 0.05);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: 0 20px 50px rgba(0, 102, 204, 0.08);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            font-weight: 800;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 0.5rem;
+            color: var(--text-dark);
+            font-family: inherit;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        input:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        button {
+            flex: 1;
+            padding: 1rem;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.2);
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #0052a3 0%, #003d80 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 1rem;
+            background: #f1f5f9;
+            color: var(--text-dark);
+            border: none;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glass-panel">
+        <h2>✏️ Editar Registro</h2>
+        <form th:action="@{'/editar/' + ${persona.id}}" method="POST">
+            <div class="form-group">
+                <label for="id">ID (No modificable)</label>
+                <input type="number" id="id" th:value="${persona != null ? persona.id : ''}" disabled>
+            </div>
+            <div class="form-group">
+                <label for="nombre">Nombre Completo</label>
+                <input type="text" id="nombre" name="nombre" th:value="${persona != null ? persona.nombre : ''}" required>
+            </div>
+            <div class="form-group">
+                <label for="edad">Edad</label>
+                <input type="number" id="edad" name="edad" th:value="${persona != null ? persona.edad : ''}" required>
+            </div>
+            <div class="btn-group">
+                <button type="submit">Actualizar</button>
+                <a href="/crud" class="btn-cancel">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
